@@ -36,10 +36,10 @@ jobs:
           "$CLI_PATH" check add smoke -- test -f note.txt
           "$CLI_PATH" verify smoke
           "$CLI_PATH" resume | tee "$RUNNER_TEMP/companion-current.txt"
-          rg 'CHECK PASSED' "$RUNNER_TEMP/companion-current.txt"
+          grep -F 'CHECK PASSED' "$RUNNER_TEMP/companion-current.txt"
           echo changed > note.txt
           "$CLI_PATH" resume | tee "$RUNNER_TEMP/companion-updated.txt"
-          rg 'outdated' "$RUNNER_TEMP/companion-updated.txt"
+          grep -F 'outdated' "$RUNNER_TEMP/companion-updated.txt"
           "$CLI_PATH" privacy
           "$CLI_PATH" forget --yes
           test -f note.txt
