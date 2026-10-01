@@ -18,14 +18,23 @@ it is not an announcement of publicly available application source.
 
 Download and verify the Linux x86_64 archive from Releases. Install its binary
 into your PATH. Install [Ollama](https://ollama.com/download), start its local
-server and download a model:
+server and download a model once:
 
 ```sh
 ollama pull qwen3:4b-instruct-2507-q4_K_M
-cd your-git-project
-devcompanion init --goal "Finish the login flow"
+```
+
+Skip the pull if `ollama list` already shows this model. Open a terminal in the
+existing Git project you want help with, then run:
+
+```sh
+devcompanion init
 devcompanion start
 ```
+
+At the `You >` prompt, describe your actual task in plain language. `/help`
+lists conversation actions. Use `/remember` followed by your own goal to save
+it across sessions. `/quit` returns to the shell.
 
 `start` combines local conversation and project awareness. `/file PATH` attaches
 a repository text file; `/remember TEXT` saves an intention; `/quiet` pauses
