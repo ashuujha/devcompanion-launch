@@ -1,14 +1,14 @@
 # Dev Companion — free offline developer preview
 
-A personal terminal companion for development work. Name it, choose a text pet,
+A personal terminal companion for development work. Name it, choose a pixel pet,
 response style and downloaded local brain, then carry goals and decisions across
 sessions. Give it a development goal and return to changes you can review.
 Inference, conversation, memory and project awareness stay on your machine.
 
-**Linux x86_64 preview 0.3.0.** Application source remains private. This repository
+**Linux x86_64 preview 0.3.1.** Application source remains private. This repository
 contains public launch assets, feedback templates and binary releases.
 
-- [Download and checksums](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.3.0)
+- [Download and checksums](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.3.1)
 - [First-session setup and privacy](https://ashuujha.github.io/devcompanion-launch/guide.html)
 - [Recorded offline workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt)
 - [First-session feedback](https://github.com/ashuujha/devcompanion-launch/issues/new/choose)
@@ -25,13 +25,22 @@ Skip the pull if `ollama list` already shows it. Open a terminal in your actual
 Git project and launch:
 
 ```sh
-dot companion --name Pixel --pet cat --style mentor
+dot companion --name Pixel --pet buddy --pet-color cocoa --style mentor
 dot
 ```
 
 First use asks before enabling the project. At the prompt, describe your actual
 task. `/help` lists actions; `/home` refreshes your personal dashboard; `/quit`
 returns to the shell. `devcompanion` supports the same commands.
+
+## What 0.3.1 improves
+
+- Six original pixel characters: buddy, cloud, spark, sprout, owl and scholar.
+- A terminal gallery and independent saved colors: `/pets`, `/pet NAME`, `/pet-color COLOR`.
+- Readable labels and hints using your terminal foreground.
+- First use waits for user context or a new observed event before automatic reasoning.
+
+[See the rendered terminal pet gallery](https://ashuujha.github.io/devcompanion-launch/pets-preview.png).
 
 ## What 0.3 adds
 
@@ -55,7 +64,7 @@ terminal history or unsaved editor buffers.
 
 ## Demonstrated behavior and limits
 
-The static binary passed 52 integration tests, formatting, clippy and real terminal
+The static binary passed 54 integration tests, formatting, clippy and real terminal
 checks. A real continuing session without external connectivity exercised model
 switching, identity, reviewed learning, optional semantic retrieval and actual
 CPU token/timing measurements. See the demo and release notes for task evidence.

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.3.0' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.3.1' }}
     steps:
       - name: Download and verify the public release
         run: |
@@ -47,8 +47,9 @@ jobs:
             "$CLI_PATH" task list
             "$CLI_PATH" --help | grep -F 'work'
           fi
-          if [ "$PREVIEW_TAG" = "v0.3.0" ]; then
-            "$CLI_PATH" companion --name Pixel --pet cat --learning off
+          if [[ "$PREVIEW_TAG" == v0.3.* ]]; then
+            "$CLI_PATH" companion --name Pixel --pet buddy --pet-color cocoa --learning off
+            "$CLI_PATH" pets
             "$CLI_PATH" memory add "Keep the smoke check local"
             "$CLI_PATH" memory search smoke
             "$CLI_PATH" resources --device cpu --context 4096

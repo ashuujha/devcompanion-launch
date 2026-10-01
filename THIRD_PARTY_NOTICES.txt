@@ -1,5 +1,5 @@
 THIRD PARTY NOTICES
-Dev Companion 0.3.0
+Dev Companion 0.3.1
 
 Dependency notices and licenses follow.
 
