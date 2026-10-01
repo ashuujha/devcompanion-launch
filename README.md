@@ -7,8 +7,8 @@
 [First-session feedback](https://github.com/ashuujha/devcompanion-launch/issues/new/choose)
 
 A persistent local assistant for development work. Continue a conversation,
-recover remembered project context, get a useful briefing as code changes,
-and review a proposed action before approving it.
+recover remembered project context, delegate a small development goal,
+and return to a locally prepared patch or report for review.
 
 This repository hosts the public launch page, binary releases and feedback.
 **The application source is currently private.** This is a free early preview;
@@ -47,6 +47,18 @@ and at most one automatic inference per 90 seconds. Idle observation invokes no 
 
 ## Control and memory
 
+Use `/work` followed by your development goal to start a background task.
+The companion investigates existing repository files through your local model.
+`/tasks` lists saved work, `/activity ID` shows progress, and `/review ID` shows
+the result. `/apply ID` explicitly approves a patch; it refuses changed code
+and repeated application. Run the relevant checks afterward.
+
+Closing the conversation does not stop delegated work while the computer stays
+on. Restarting `start` recovers interrupted tasks with fresh repository evidence.
+Use `/cancel ID` to stop a task, or `task retry ID --feedback "your correction"`
+to carry feedback into a fresh investigation. Current tasks are bounded to eight
+model turns and three existing small text files per patch. No generated commands run.
+
 User intentions, conversation, code fingerprints, assistant interpretations and
 command outcomes persist locally in SQLite. Earlier interpretations retain their
 original code state. Model suggestions cannot directly run commands.
@@ -65,9 +77,13 @@ definitions, unregistered model actions and repeated approvals are refused.
 
 ## What is verified
 
-- Twenty-three integration tests exercise persistence, project isolation, dirty
+- Thirty-two integration tests exercise persistence, project isolation, dirty
   edits, check freshness, timeout/descendant cleanup, output bounds, local
-  streaming, action approval and context retrieval.
+  streaming, action approval and context retrieval, delegated work after chat
+  closes, task recovery, cancellation, scoped patch review and stale-edit refusal.
+- The real local 4B model investigated a failing calculator test and prepared
+  the correct patch. Explicit approval applied it; the registered test then passed.
+  This is a scripted fixture rather than a general coding benchmark.
 - A real local model explained a reproduced addition bug from a test failure
   and attached source. A continuing session generated a briefing after an edit.
 - An isolated network smoke test denied external connectivity and completed
@@ -76,9 +92,10 @@ definitions, unregistered model actions and repeated approvals are refused.
 
 ## Known limits
 
-Small models can make mistakes. Memory retrieval is currently lexical and based
-on recency, with no semantic memory graph. Actions are currently registered checks,
-and code editing is manual. Captured commands are bounded noninteractive jobs;
+Small models can make mistakes or return an incomplete explanation even when the proposed patch is valid. Memory retrieval is currently lexical and based
+on recency, with no semantic memory graph. Tasks prepare small reviewed patches;
+unattended implementation/test/revision loops and new-file creation remain future
+work. Captured commands are bounded noninteractive jobs;
 use ordinary terminal tools for servers and interactive programs.
 
 Initial runtime/model downloads require internet. Core operation afterward is

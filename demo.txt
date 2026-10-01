@@ -1,70 +1,131 @@
-Recorded local-model workflow on a scripted calculator fixture, 2026-10-01.
-Qwen3 4B Instruct through local Ollama on Linux; real model output follows.
-The source edit and explicit approval were performed by the evaluation script.
-Model interpretations can be wrong or misattribute evidence labels; inspect actual outcomes.
+DEV COMPANION 0.2.0 — RECORDED OFFLINE LOCAL MODEL WORKFLOW
+Scripted calculator fixture; no claim of general coding performance.
+Model: qwen3:4b-instruct-2507-q4_K_M, CPU runtime in an isolated network namespace.
+External connection denied: [Errno 101] Network is unreachable
+Only loopback networking was available. No cloud service was used.
+The maker explicitly approved the model-prepared patch, then ran the registered test.
+The CPU model's saved explanation was incomplete. It is retained below; the actual patch and test results are the evidence for this fixture.
+Earlier validation found invalid/repeated reads; recovery guards were added before this run.
+Small models can still fail or request missing information; larger changes are outside this preview.
+
+$ devcompanion init
+Project opted in: [owned evaluation fixture]/project
+Memory is local. Start the companion with `devcompanion start` for conversation and project awareness.
+Use `devcompanion chat` for conversation alone, or `watch` for observation alone.
 
 
-Dev Companion · demo-project
-Branch: main · d2ef5d16f744
-Working tree: 1 changed/untracked paths
-   M calculator.py
+Actual exit: 0 · observed elapsed: 0.044 seconds
 
-Your saved intentions:
-  [1] Fix the addition bug and verify the calculator · saved on an earlier code state
+$ devcompanion check add tests -- python3 -m unittest -v
+Registered 'tests': python3 -m unittest -v
+It will run only when you invoke verify.
 
-Recent evidence:
-  [run:7] FAILED · python3 -m unittest -v · 2026-10-01 15:18 UTC
-  [run:6] FAILED · python3 -m unittest -v · 2026-10-01 15:11 UTC
-  [run:5] CHECK EXITED 0 · evidence outdated or code changed during execution · python3 -m unittest -v · 2026-10-01 15:05 UTC
-  [run:4] CHECK EXITED 0 · evidence outdated or code changed during execution · python3 -m unittest -v · 2026-10-01 14:37 UTC
 
-Local conversation · qwen3:4b-instruct-2507-q4_K_M
-/help for actions · /quit to leave
-Project awareness active: Git state, up to two changed source snippets and recorded commands.
-Local proactive reasoning pauses for 10s after edits, at most once per 90s. /quiet pauses it; /quit ends observation.
+Actual exit: 0 · observed elapsed: 0.014 seconds
 
-You > 
-Companion [briefing:14]:
-**Project Briefing:**  
-The addition function in `calculator.py` currently returns `a - b` instead of `a + b`, causing the test to fail (`assertEqual(add(2, 3), 5)` → `-1 != 5`). This was observed in the latest test run [run:7], which failed. The intention to fix the addition bug remains active.  
+$ devcompanion verify tests
 
-**Next Step:** Correct the `add` function to perform addition (`a + b`) and verify with the test.
+Recorded [run:1] · exit 1 · 57 ms
+Ask for help with `devcompanion explain`, or continue in `devcompanion chat`.
 
-You > 
-Companion [briefing:15]:
-**Project Briefing:**  
-The developer modified `calculator.py` and aims to fix an addition bug. Current code shows correct integer addition, but no test has passed (no current verified check). Earlier successful tests (e.g., f7d70fa) are outdated.  
+test_addition (test_calculator.AdditionTest.test_addition) ... FAIL
 
-**Next Step:** Run the test suite to verify functionality with current code.  
-*Evidence: available-checks [["tests",["python3","-m","unittest","-v"]]]*  
+======================================================================
+FAIL: test_addition (test_calculator.AdditionTest.test_addition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[owned evaluation fixture]/project/test_calculator.py", line 6, in test_addition
+    self.assertEqual(add(2, 3), 5)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: -1 != 5
 
-This confirms whether the addition bug is resolved in the current state.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
 
-You > Observation and proactive reasoning paused. /assist resumes them.
+FAILED (failures=1)
 
-You > 
-Proposal [2] · tests
-Command: python3 -m unittest -v
-Reason: The registered test check is the only available verification method for the addition functionality. Since no current passing evidence exists for this check, running it is necessary to validate the current addition change. The check is explicitly registered and directly relevant to verifying the calculator's behavior, as per the available-checks list.
-Nothing executed. Review with `proposals`, then use `approve 2` or `reject 2` (in chat: /approve 2).
+Actual exit: 1 · observed elapsed: 0.085 seconds
 
-Executing approved proposal [2]: python3 -m unittest -v
+$ devcompanion work --foreground Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.
+Task [1] · saved locally. Investigation finished.
+Follow with `task show 1`; review with `task review 1`. Nothing is applied automatically.
 
-Recorded [run:8] · exit 0 · 56 ms
+
+Actual exit: 0 · observed elapsed: 40.003 seconds
+
+$ devcompanion task show 1
+{
+  "activity": [
+    "Goal accepted. Local investigation and patch preparation authorized; applying changes requires a separate approval.",
+    "Step 1/8: reasoning locally about the delegated goal.",
+    "Inspected calculator.py from line 1.",
+    "Step 2/8: reasoning locally about the delegated goal.",
+    "Patch prepared and checked for applicability. Review and approval required; tests have not been run on the proposed code."
+  ],
+  "task": {
+    "edits": [
+      {
+        "after": "def add(a, b):\n    return a + b\n",
+        "before": "def add(a, b):\n    return a - b\n",
+        "path": "calculator.py"
+      }
+    ],
+    "fingerprint": "0cc3e7b41637007c70a24fbe638b07e9c4a71129ea1854948683576881b3d498",
+    "goal": "Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.",
+    "id": 1,
+    "report": "The failing test indicates that add(2, ",
+    "root": "[owned evaluation fixture]",
+    "status": "review",
+    "updated_at": 1790871203,
+    "worker_pid": 117423
+  }
+}
+
+
+Actual exit: 0 · observed elapsed: 0.01 seconds
+
+$ devcompanion task review 1
+Task [1] · review
+Goal: Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.
+
+The failing test indicates that add(2,
+
+diff --git a/calculator.py b/calculator.py
+--- a/calculator.py
++++ b/calculator.py
+@@ -1,2 +1,2 @@
+-def add(a, b):
+-    return a - b
++def add(a, b):
++    return a + b
+
+Proposed code has not been tested. Approve with `task apply 1` (in chat: /apply 1); reject with `task reject 1`.
+
+
+Actual exit: 0 · observed elapsed: 0.01 seconds
+
+$ devcompanion task apply 1
+Applied task [1]. Run the relevant checks before relying on the change.
+
+
+Actual exit: 0 · observed elapsed: 0.025 seconds
+
+$ devcompanion verify tests
+
+Recorded [run:2] · exit 0 · 57 ms
 Configured check passed for this code state. Unchecked behavior still needs review.
 
+test_addition (test_calculator.AdditionTest.test_addition) ... ok
 
-Dev Companion · demo-project
-Branch: main · d2ef5d16f744
-Working tree: 1 changed/untracked paths
-   M calculator.py
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
 
-Your saved intentions:
-  [1] Fix the addition bug and verify the calculator · saved on an earlier code state
+OK
 
-Recent evidence:
-  [run:8] CHECK PASSED · current code · python3 -m unittest -v · 2026-10-01 15:22 UTC
-  [run:7] FAILED · python3 -m unittest -v · 2026-10-01 15:18 UTC
-  [run:6] FAILED · python3 -m unittest -v · 2026-10-01 15:11 UTC
-  [run:5] CHECK EXITED 0 · evidence outdated or code changed during execution · python3 -m unittest -v · 2026-10-01 15:05 UTC
+Actual exit: 0 · observed elapsed: 0.085 seconds
 
+$ devcompanion task apply 1
+
+Dev Companion: Only a pending patch can be applied
+
+Actual exit: 1 · observed elapsed: 0.016 seconds

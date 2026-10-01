@@ -9,20 +9,22 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.2.0' }}
     steps:
       - name: Download and verify the public release
-        env:
-          RELEASE_URL: https://github.com/ashuujha/devcompanion-launch/releases/download/v0.1.0
         run: |
-          curl --fail --location "$RELEASE_URL/devcompanion-0.1.0-linux-x86_64.tar.gz" --output preview.tar.gz
+          PREVIEW_VERSION="${PREVIEW_TAG#v}"
+          RELEASE_URL="https://github.com/ashuujha/devcompanion-launch/releases/download/$PREVIEW_TAG"
+          PREVIEW_ARCHIVE="devcompanion-$PREVIEW_VERSION-linux-x86_64.tar.gz"
+          curl --fail --location "$RELEASE_URL/$PREVIEW_ARCHIVE" --output "$PREVIEW_ARCHIVE"
           curl --fail --location "$RELEASE_URL/SHA256SUMS" --output SHA256SUMS
-          mv preview.tar.gz devcompanion-0.1.0-linux-x86_64.tar.gz
           sha256sum --check SHA256SUMS
-          tar -xzf devcompanion-0.1.0-linux-x86_64.tar.gz
-          ./devcompanion-0.1.0/devcompanion --version
+          tar -xzf "$PREVIEW_ARCHIVE"
+          "./devcompanion-$PREVIEW_VERSION/devcompanion" --version
+          echo "CLI_PATH=$PWD/devcompanion-$PREVIEW_VERSION/devcompanion" >> "$GITHUB_ENV"
       - name: Exercise the published binary on a fresh Git project
         run: |
-          CLI_PATH="$PWD/devcompanion-0.1.0/devcompanion"
           export DEVCOMPANION_HOME="$RUNNER_TEMP/companion-state"
           mkdir -p "$RUNNER_TEMP/companion-project"
           cd "$RUNNER_TEMP/companion-project"
@@ -41,5 +43,9 @@ jobs:
           "$CLI_PATH" resume | tee "$RUNNER_TEMP/companion-updated.txt"
           grep -F 'outdated' "$RUNNER_TEMP/companion-updated.txt"
           "$CLI_PATH" privacy
+          if [ "$PREVIEW_TAG" = "v0.2.0" ]; then
+            "$CLI_PATH" task list
+            "$CLI_PATH" --help | grep -F 'work'
+          fi
           "$CLI_PATH" forget --yes
           test -f note.txt
