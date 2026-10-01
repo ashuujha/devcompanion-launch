@@ -1,0 +1,70 @@
+Recorded local-model workflow on a scripted calculator fixture, 2026-10-01.
+Qwen3 4B Instruct through local Ollama on Linux; real model output follows.
+The source edit and explicit approval were performed by the evaluation script.
+Model interpretations can be wrong or misattribute evidence labels; inspect actual outcomes.
+
+
+Dev Companion · demo-project
+Branch: main · d2ef5d16f744
+Working tree: 1 changed/untracked paths
+   M calculator.py
+
+Your saved intentions:
+  [1] Fix the addition bug and verify the calculator · saved on an earlier code state
+
+Recent evidence:
+  [run:7] FAILED · python3 -m unittest -v · 2026-10-01 15:18 UTC
+  [run:6] FAILED · python3 -m unittest -v · 2026-10-01 15:11 UTC
+  [run:5] CHECK EXITED 0 · evidence outdated or code changed during execution · python3 -m unittest -v · 2026-10-01 15:05 UTC
+  [run:4] CHECK EXITED 0 · evidence outdated or code changed during execution · python3 -m unittest -v · 2026-10-01 14:37 UTC
+
+Local conversation · qwen3:4b-instruct-2507-q4_K_M
+/help for actions · /quit to leave
+Project awareness active: Git state, up to two changed source snippets and recorded commands.
+Local proactive reasoning pauses for 10s after edits, at most once per 90s. /quiet pauses it; /quit ends observation.
+
+You > 
+Companion [briefing:14]:
+**Project Briefing:**  
+The addition function in `calculator.py` currently returns `a - b` instead of `a + b`, causing the test to fail (`assertEqual(add(2, 3), 5)` → `-1 != 5`). This was observed in the latest test run [run:7], which failed. The intention to fix the addition bug remains active.  
+
+**Next Step:** Correct the `add` function to perform addition (`a + b`) and verify with the test.
+
+You > 
+Companion [briefing:15]:
+**Project Briefing:**  
+The developer modified `calculator.py` and aims to fix an addition bug. Current code shows correct integer addition, but no test has passed (no current verified check). Earlier successful tests (e.g., f7d70fa) are outdated.  
+
+**Next Step:** Run the test suite to verify functionality with current code.  
+*Evidence: available-checks [["tests",["python3","-m","unittest","-v"]]]*  
+
+This confirms whether the addition bug is resolved in the current state.
+
+You > Observation and proactive reasoning paused. /assist resumes them.
+
+You > 
+Proposal [2] · tests
+Command: python3 -m unittest -v
+Reason: The registered test check is the only available verification method for the addition functionality. Since no current passing evidence exists for this check, running it is necessary to validate the current addition change. The check is explicitly registered and directly relevant to verifying the calculator's behavior, as per the available-checks list.
+Nothing executed. Review with `proposals`, then use `approve 2` or `reject 2` (in chat: /approve 2).
+
+Executing approved proposal [2]: python3 -m unittest -v
+
+Recorded [run:8] · exit 0 · 56 ms
+Configured check passed for this code state. Unchecked behavior still needs review.
+
+
+Dev Companion · demo-project
+Branch: main · d2ef5d16f744
+Working tree: 1 changed/untracked paths
+   M calculator.py
+
+Your saved intentions:
+  [1] Fix the addition bug and verify the calculator · saved on an earlier code state
+
+Recent evidence:
+  [run:8] CHECK PASSED · current code · python3 -m unittest -v · 2026-10-01 15:22 UTC
+  [run:7] FAILED · python3 -m unittest -v · 2026-10-01 15:18 UTC
+  [run:6] FAILED · python3 -m unittest -v · 2026-10-01 15:11 UTC
+  [run:5] CHECK EXITED 0 · evidence outdated or code changed during execution · python3 -m unittest -v · 2026-10-01 15:05 UTC
+

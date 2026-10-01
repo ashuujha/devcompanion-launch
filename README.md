@@ -3,6 +3,7 @@
 [Try the preview](https://ashuujha.github.io/devcompanion-launch/) ·
 [Setup and privacy](https://ashuujha.github.io/devcompanion-launch/guide.html) ·
 [Downloads](https://github.com/ashuujha/devcompanion-launch/releases) ·
+[Recorded workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt) ·
 [First-session feedback](https://github.com/ashuujha/devcompanion-launch/issues/new/choose)
 
 A persistent local assistant for development work. Continue a conversation,
@@ -55,7 +56,7 @@ definitions, unregistered model actions and repeated approvals are refused.
 
 ## What is verified
 
-- Nineteen integration tests exercise persistence, project isolation, dirty
+- Twenty-three integration tests exercise persistence, project isolation, dirty
   edits, check freshness, timeout/descendant cleanup, output bounds, local
   streaming, action approval and context retrieval.
 - A real local model explained a reproduced addition bug from a test failure
