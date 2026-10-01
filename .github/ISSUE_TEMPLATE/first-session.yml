@@ -9,7 +9,7 @@ body:
     id: setup
     attributes:
       label: Platform and local model
-      placeholder: "Linux x86_64, qwen3:1.7b, CPU or GPU"
+      placeholder: "Linux x86_64, qwen3:4b-instruct-2507-q4_K_M, CPU or GPU"
     validations:
       required: true
   - type: dropdown

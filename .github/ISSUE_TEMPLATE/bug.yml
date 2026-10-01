@@ -6,7 +6,7 @@ body:
     id: version
     attributes:
       label: Version, platform and model
-      placeholder: "0.1.0, Linux x86_64, qwen3:1.7b"
+      placeholder: "0.1.0, Linux x86_64, qwen3:4b-instruct-2507-q4_K_M"
     validations:
       required: true
   - type: textarea

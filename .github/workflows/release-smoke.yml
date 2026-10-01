@@ -1,0 +1,45 @@
+name: Public Linux release smoke
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download and verify the public release
+        env:
+          RELEASE_URL: https://github.com/ashuujha/devcompanion-launch/releases/download/v0.1.0
+        run: |
+          curl --fail --location "$RELEASE_URL/devcompanion-0.1.0-linux-x86_64.tar.gz" --output preview.tar.gz
+          curl --fail --location "$RELEASE_URL/SHA256SUMS" --output SHA256SUMS
+          mv preview.tar.gz devcompanion-0.1.0-linux-x86_64.tar.gz
+          sha256sum --check SHA256SUMS
+          tar -xzf devcompanion-0.1.0-linux-x86_64.tar.gz
+          ./devcompanion-0.1.0/devcompanion --version
+      - name: Exercise the published binary on a fresh Git project
+        run: |
+          CLI_PATH="$PWD/devcompanion-0.1.0/devcompanion"
+          export DEVCOMPANION_HOME="$RUNNER_TEMP/companion-state"
+          mkdir -p "$RUNNER_TEMP/companion-project"
+          cd "$RUNNER_TEMP/companion-project"
+          git init -b main
+          git config user.name "Release Smoke"
+          git config user.email "smoke@example.invalid"
+          echo first > note.txt
+          git add note.txt
+          git commit -m initial
+          "$CLI_PATH" init --goal "Verify the published binary"
+          "$CLI_PATH" check add smoke -- test -f note.txt
+          "$CLI_PATH" verify smoke
+          "$CLI_PATH" resume | tee "$RUNNER_TEMP/companion-current.txt"
+          rg 'CHECK PASSED' "$RUNNER_TEMP/companion-current.txt"
+          echo changed > note.txt
+          "$CLI_PATH" resume | tee "$RUNNER_TEMP/companion-updated.txt"
+          rg 'outdated' "$RUNNER_TEMP/companion-updated.txt"
+          "$CLI_PATH" privacy
+          "$CLI_PATH" forget --yes
+          test -f note.txt

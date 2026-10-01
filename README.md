@@ -20,7 +20,7 @@ into your PATH. Install [Ollama](https://ollama.com/download), start its local
 server and download a model:
 
 ```sh
-ollama pull qwen3:1.7b
+ollama pull qwen3:4b-instruct-2507-q4_K_M
 cd your-git-project
 devcompanion init --goal "Finish the login flow"
 devcompanion start
@@ -55,7 +55,7 @@ definitions, unregistered model actions and repeated approvals are refused.
 
 ## What is verified
 
-- Seventeen integration tests exercise persistence, project isolation, dirty
+- Nineteen integration tests exercise persistence, project isolation, dirty
   edits, check freshness, timeout/descendant cleanup, output bounds, local
   streaming, action approval and context retrieval.
 - A real local model explained a reproduced addition bug from a test failure
