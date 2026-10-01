@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.2.0' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.3.0' }}
     steps:
       - name: Download and verify the public release
         run: |
@@ -43,9 +43,20 @@ jobs:
           "$CLI_PATH" resume | tee "$RUNNER_TEMP/companion-updated.txt"
           grep -F 'outdated' "$RUNNER_TEMP/companion-updated.txt"
           "$CLI_PATH" privacy
-          if [ "$PREVIEW_TAG" = "v0.2.0" ]; then
+          if [ "$PREVIEW_TAG" != "v0.1.0" ]; then
             "$CLI_PATH" task list
             "$CLI_PATH" --help | grep -F 'work'
+          fi
+          if [ "$PREVIEW_TAG" = "v0.3.0" ]; then
+            "$CLI_PATH" companion --name Pixel --pet cat --learning off
+            "$CLI_PATH" memory add "Keep the smoke check local"
+            "$CLI_PATH" memory search smoke
+            "$CLI_PATH" resources --device cpu --context 4096
+            "$CLI_PATH" integration vscode
+            "$CLI_PATH" data export "$RUNNER_TEMP/project-export.json"
+            "$CLI_PATH" data backup "$RUNNER_TEMP/state-backup.sqlite3"
+            test -s "$RUNNER_TEMP/project-export.json"
+            test -s "$RUNNER_TEMP/state-backup.sqlite3"
           fi
           "$CLI_PATH" forget --yes
           test -f note.txt

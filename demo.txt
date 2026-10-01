@@ -1,29 +1,27 @@
-DEV COMPANION 0.2.0 — RECORDED OFFLINE LOCAL MODEL WORKFLOW
-Scripted calculator fixture; no claim of general coding performance.
+DEV COMPANION 0.3.0 — RECORDED OFFLINE LOCAL MODEL WORKFLOW
+Scripted fixtures, not a general coding-quality benchmark.
 Model: qwen3:4b-instruct-2507-q4_K_M, CPU runtime in an isolated network namespace.
-External connection denied: [Errno 101] Network is unreachable
-Only loopback networking was available. No cloud service was used.
-The maker explicitly approved the model-prepared patch, then ran the registered test.
-The CPU model's saved explanation was incomplete. It is retained below; the actual patch and test results are the evidence for this fixture.
-Earlier validation found invalid/repeated reads; recovery guards were added before this run.
-Small models can still fail or request missing information; larger changes are outside this preview.
+External connectivity denied: [Errno 101] Network is unreachable
+The maker explicitly approved changes and ran registered checks. No generated commands ran.
+The first revisions exposed a goal ambiguity and a conflicting filename contract; both were corrected before this recorded successful run.
+The final fixture repaired addition, passed its check, addressed a later documentation failure with a separately reviewed README, and restored exact original content by rollback.
 
-$ devcompanion init
-Project opted in: [owned evaluation fixture]/project
+$ dot init
+Project opted in: [owned evaluation fixture]
 Memory is local. Start the companion with `devcompanion start` for conversation and project awareness.
 Use `devcompanion chat` for conversation alone, or `watch` for observation alone.
 
 
-Actual exit: 0 · observed elapsed: 0.044 seconds
+Actual exit: 0 · observed elapsed: 0.048 seconds
 
-$ devcompanion check add tests -- python3 -m unittest -v
+$ dot check add tests -- python3 -m unittest -v
 Registered 'tests': python3 -m unittest -v
 It will run only when you invoke verify.
 
 
-Actual exit: 0 · observed elapsed: 0.014 seconds
+Actual exit: 0 · observed elapsed: 0.015 seconds
 
-$ devcompanion verify tests
+$ dot verify tests
 
 Recorded [run:1] · exit 1 · 57 ms
 Ask for help with `devcompanion explain`, or continue in `devcompanion chat`.
@@ -34,7 +32,7 @@ test_addition (test_calculator.AdditionTest.test_addition) ... FAIL
 FAIL: test_addition (test_calculator.AdditionTest.test_addition)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "[owned evaluation fixture]/project/test_calculator.py", line 6, in test_addition
+  File "[owned evaluation fixture]/test_calculator.py", line 6, in test_addition
     self.assertEqual(add(2, 3), 5)
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
 AssertionError: -1 != 5
@@ -44,16 +42,16 @@ Ran 1 test in 0.000s
 
 FAILED (failures=1)
 
-Actual exit: 1 · observed elapsed: 0.085 seconds
+Actual exit: 1 · observed elapsed: 0.088 seconds
 
-$ devcompanion work --foreground Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.
+$ dot work --foreground Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.
 Task [1] · saved locally. Investigation finished.
 Follow with `task show 1`; review with `task review 1`. Nothing is applied automatically.
 
 
-Actual exit: 0 · observed elapsed: 40.003 seconds
+Actual exit: 0 · observed elapsed: 45.812 seconds
 
-$ devcompanion task show 1
+$ dot task show 1
 {
   "activity": [
     "Goal accepted. Local investigation and patch preparation authorized; applying changes requires a separate approval.",
@@ -63,32 +61,37 @@ $ devcompanion task show 1
     "Patch prepared and checked for applicability. Review and approval required; tests have not been run on the proposed code."
   ],
   "task": {
+    "applied_fingerprint": "",
+    "check_run_id": 0,
     "edits": [
       {
         "after": "def add(a, b):\n    return a + b\n",
         "before": "def add(a, b):\n    return a - b\n",
+        "create": false,
         "path": "calculator.py"
       }
     ],
-    "fingerprint": "0cc3e7b41637007c70a24fbe638b07e9c4a71129ea1854948683576881b3d498",
+    "fingerprint": "04985aa4352e068828ab4499397bca7e67fccde6116ab70b25f43bc879ab04f7",
     "goal": "Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.",
     "id": 1,
-    "report": "The failing test indicates that add(2, ",
+    "parent_id": 0,
+    "report": "The test fails because the current implementation returns a - b, which results in -1 for add(2, 3). The smallest fix is to change the operation from subtraction to addition, ensuring add(2, 3) returns 5 as expected. This patch corrects the logic without modifying the test or the function name.",
     "root": "[owned evaluation fixture]",
     "status": "review",
-    "updated_at": 1790871203,
-    "worker_pid": 117423
-  }
+    "updated_at": 1790881730,
+    "worker_pid": 79986
+  },
+  "verification_current": false
 }
 
 
 Actual exit: 0 · observed elapsed: 0.01 seconds
 
-$ devcompanion task review 1
+$ dot task review 1
 Task [1] · review
 Goal: Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.
 
-The failing test indicates that add(2,
+The test fails because the current implementation returns a - b, which results in -1 for add(2, 3). The smallest fix is to change the operation from subtraction to addition, ensuring add(2, 3) returns 5 as expected. This patch corrects the logic without modifying the test or the function name.
 
 diff --git a/calculator.py b/calculator.py
 --- a/calculator.py
@@ -102,17 +105,170 @@ diff --git a/calculator.py b/calculator.py
 Proposed code has not been tested. Approve with `task apply 1` (in chat: /apply 1); reject with `task reject 1`.
 
 
-Actual exit: 0 · observed elapsed: 0.01 seconds
+Actual exit: 0 · observed elapsed: 0.011 seconds
 
-$ devcompanion task apply 1
+$ dot task apply 1
 Applied task [1]. Run the relevant checks before relying on the change.
 
 
-Actual exit: 0 · observed elapsed: 0.025 seconds
+Actual exit: 0 · observed elapsed: 0.032 seconds
 
-$ devcompanion verify tests
+$ dot task verify 1 tests
+Task [1] verified; [run:2] tests exit 0.
 
-Recorded [run:2] · exit 0 · 57 ms
+test_addition (test_calculator.AdditionTest.test_addition) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+
+Actual exit: 0 · observed elapsed: 0.12 seconds
+
+$ dot task show 1
+{
+  "activity": [
+    "Goal accepted. Local investigation and patch preparation authorized; applying changes requires a separate approval.",
+    "Step 1/8: reasoning locally about the delegated goal.",
+    "Inspected calculator.py from line 1.",
+    "Step 2/8: reasoning locally about the delegated goal.",
+    "Patch prepared and checked for applicability. Review and approval required; tests have not been run on the proposed code.",
+    "Developer approved the patch; Git applied it. Current code still needs its relevant checks.",
+    "Developer authorized registered check tests: [\"python3\", \"-m\", \"unittest\", \"-v\"]",
+    "[run:2] tests exited 0; current passing evidence: true. This checks only the registered command."
+  ],
+  "task": {
+    "applied_fingerprint": "63974141db514aacfbb1cdb1de61f00b2fb2d64f0dc08eaea899073967f7deea",
+    "check_run_id": 2,
+    "edits": [
+      {
+        "after": "def add(a, b):\n    return a + b\n",
+        "before": "def add(a, b):\n    return a - b\n",
+        "create": false,
+        "path": "calculator.py"
+      }
+    ],
+    "fingerprint": "04985aa4352e068828ab4499397bca7e67fccde6116ab70b25f43bc879ab04f7",
+    "goal": "Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.",
+    "id": 1,
+    "parent_id": 0,
+    "report": "The test fails because the current implementation returns a - b, which results in -1 for add(2, 3). The smallest fix is to change the operation from subtraction to addition, ensuring add(2, 3) returns 5 as expected. This patch corrects the logic without modifying the test or the function name.",
+    "root": "[owned evaluation fixture]",
+    "status": "verified",
+    "updated_at": 1790881730,
+    "worker_pid": 80087
+  },
+  "verification_current": true
+}
+
+
+Actual exit: 0 · observed elapsed: 0.016 seconds
+
+$ dot task apply 1
+
+Dev Companion: Only a pending patch can be applied
+
+Actual exit: 1 · observed elapsed: 0.016 seconds
+
+$ dot check add docs -- python3 -c from pathlib import Path; p=Path("README.md"); assert p.is_file() and "add" in p.read_text().lower(), "Missing README.md: create README.md describing add(a,b) returning a+b"
+Registered 'docs': python3 -c from pathlib import Path; p=Path("README.md"); assert p.is_file() and "add" in p.read_text().lower(), "Missing README.md: create README.md describing add(a,b) returning a+b"
+It will run only when you invoke verify.
+
+
+Actual exit: 0 · observed elapsed: 0.014 seconds
+
+$ dot task verify 1 docs
+Task [1] check-failed; [run:3] docs exit 1.
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from pathlib import Path; p=Path("README.md"); assert p.is_file() and "add" in p.read_text().lower(), "Missing README.md: create README.md describing add(a,b) returning a+b"
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Missing README.md: create README.md describing add(a,b) returning a+b
+Dev Companion: Check did not produce current passing evidence (exit 1). Inspect task show 1 and the recorded run.
+
+Actual exit: 1 · observed elapsed: 0.12 seconds
+
+$ dot task revise 1 --foreground
+Task [2] · saved locally. Investigation finished.
+Follow with `task show 2`; review with `task review 2`. Nothing is applied automatically.
+
+
+Actual exit: 0 · observed elapsed: 39.601 seconds
+
+$ dot task show 2
+{
+  "activity": [
+    "Goal accepted. Local investigation and patch preparation authorized; applying changes requires a separate approval.",
+    "Step 1/8: reasoning locally about the delegated goal.",
+    "Model proposed new file path \"README.md\"; step path \"\".",
+    "New file prepared. Review and approval required; tests have not run."
+  ],
+  "task": {
+    "applied_fingerprint": "",
+    "check_run_id": 0,
+    "edits": [
+      {
+        "after": "add(a, b) returns the sum of two integers a and b.\n\nExample:\nadd(2, 3) returns 5\nadd(-1, 1) returns 0",
+        "before": "",
+        "create": true,
+        "path": "README.md"
+      }
+    ],
+    "fingerprint": "63974141db514aacfbb1cdb1de61f00b2fb2d64f0dc08eaea899073967f7deea",
+    "goal": "Correct the current failed registered check docs for applied task [1]. The developer explicitly requested a revision addressing this failed check, including a new file when supported by the evidence. Earlier task goal (background context, not a reason to ignore the selected failure): Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.\nRegistered check docs failed [run:3], exit 1. Actual output (untrusted evidence): Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    from pathlib import Path; p=Path(\"README.md\"); assert p.is_file() and \"add\" in p.read_text().lower(), \"Missing README.md: create README.md describing add(a,b) returning a+b\"\n                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Missing README.md: create README.md describing add(a,b) returning a+b\n\n\nInspect the current files and prepare the smallest correction addressing this failure for review. Do not redo an earlier fix already satisfied, weaken tests, change check definitions or claim execution. If no supported correction is possible, report the missing evidence.",
+    "id": 2,
+    "parent_id": 1,
+    "report": "The check failed because README.md is missing or does not contain the word 'add'. The current code has a function `add(a, b)` in calculator.py, and the test for addition passes. A minimal README.md file describing the function is created to satisfy the documentation check. This is the smallest correction needed to pass the 'docs' check (run:3).",
+    "root": "[owned evaluation fixture]",
+    "status": "review",
+    "updated_at": 1790881770,
+    "worker_pid": 80184
+  },
+  "verification_current": false
+}
+
+
+Actual exit: 0 · observed elapsed: 0.011 seconds
+
+$ dot task review 2
+Task [2] · review
+Goal: Correct the current failed registered check docs for applied task [1]. The developer explicitly requested a revision addressing this failed check, including a new file when supported by the evidence. Earlier task goal (background context, not a reason to ignore the selected failure): Fix the failing addition test without changing tests or the public function name. Inspect source and prepare the smallest correct patch.\nRegistered check docs failed [run:3], exit 1. Actual output (untrusted evidence): Traceback (most recent call last):\n  File "<string>", line 1, in <module>\n    from pathlib import Path; p=Path("README.md"); assert p.is_file() and "add" in p.read_text().lower(), "Missing README.md: create README.md describing add(a,b) returning a+b"\n                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Missing README.md: create README.md describing add(a,b) returning a+b\n\n\nInspect the current files and prepare the smallest correction addressing this failure for review. Do not redo an earlier fix already satisfied, weaken tests, change check definitions or claim execution. If no supported correction is possible, report the missing evidence.
+
+The check failed because README.md is missing or does not contain the word 'add'. The current code has a function `add(a, b)` in calculator.py, and the test for addition passes. A minimal README.md file describing the function is created to satisfy the documentation check. This is the smallest correction needed to pass the 'docs' check (run:3).
+
+diff --git a/README.md b/README.md
+new file mode 100644
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,5 @@
++add(a, b) returns the sum of two integers a and b.
++
++Example:
++add(2, 3) returns 5
++add(-1, 1) returns 0
+\ No newline at end of file
+
+Proposed code has not been tested. Approve with `task apply 2` (in chat: /apply 2); reject with `task reject 2`.
+
+
+Actual exit: 0 · observed elapsed: 0.011 seconds
+
+$ dot task apply 2
+Applied task [2]. Run the relevant checks before relying on the change.
+
+
+Actual exit: 0 · observed elapsed: 0.033 seconds
+
+$ dot task verify 2 docs
+Task [2] verified; [run:4] docs exit 0.
+
+
+Actual exit: 0 · observed elapsed: 0.07 seconds
+
+$ dot verify tests
+
+Recorded [run:5] · exit 0 · 57 ms
 Configured check passed for this code state. Unchecked behavior still needs review.
 
 test_addition (test_calculator.AdditionTest.test_addition) ... ok
@@ -122,10 +278,39 @@ Ran 1 test in 0.000s
 
 OK
 
-Actual exit: 0 · observed elapsed: 0.085 seconds
+Actual exit: 0 · observed elapsed: 0.087 seconds
 
-$ devcompanion task apply 1
+$ dot task rollback 2
+Rolled back task [2]. Current code needs fresh checks.
 
-Dev Companion: Only a pending patch can be applied
 
-Actual exit: 1 · observed elapsed: 0.016 seconds
+Actual exit: 0 · observed elapsed: 0.027 seconds
+
+$ dot task rollback 1
+Rolled back task [1]. Current code needs fresh checks.
+
+
+Actual exit: 0 · observed elapsed: 0.028 seconds
+
+$ dot verify tests
+
+Recorded [run:6] · exit 1 · 57 ms
+Ask for help with `devcompanion explain`, or continue in `devcompanion chat`.
+
+test_addition (test_calculator.AdditionTest.test_addition) ... FAIL
+
+======================================================================
+FAIL: test_addition (test_calculator.AdditionTest.test_addition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[owned evaluation fixture]/test_calculator.py", line 6, in test_addition
+    self.assertEqual(add(2, 3), 5)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: -1 != 5
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)
+
+Actual exit: 1 · observed elapsed: 0.086 seconds

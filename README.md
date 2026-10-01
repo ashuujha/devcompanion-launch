@@ -1,108 +1,76 @@
-# Dev Companion · free offline developer companion
+# Dev Companion — free offline developer preview
 
-[Try the preview](https://ashuujha.github.io/devcompanion-launch/) ·
-[Setup and privacy](https://ashuujha.github.io/devcompanion-launch/guide.html) ·
-[Downloads](https://github.com/ashuujha/devcompanion-launch/releases) ·
-[Recorded workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt) ·
-[First-session feedback](https://github.com/ashuujha/devcompanion-launch/issues/new/choose)
+A personal terminal companion for development work. Name it, choose a text pet,
+response style and downloaded local brain, then carry goals and decisions across
+sessions. Give it a development goal and return to changes you can review.
+Inference, conversation, memory and project awareness stay on your machine.
 
-A persistent local assistant for development work. Continue a conversation,
-recover remembered project context, delegate a small development goal,
-and return to a locally prepared patch or report for review.
+**Linux x86_64 preview 0.3.0.** Application source remains private. This repository
+contains public launch assets, feedback templates and binary releases.
 
-This repository hosts the public launch page, binary releases and feedback.
-**The application source is currently private.** This is a free early preview;
-it is not an announcement of publicly available application source.
+- [Download and checksums](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.3.0)
+- [First-session setup and privacy](https://ashuujha.github.io/devcompanion-launch/guide.html)
+- [Recorded offline workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt)
+- [First-session feedback](https://github.com/ashuujha/devcompanion-launch/issues/new/choose)
 
-## First session
+## Start with your own project
 
-Download and verify the Linux x86_64 archive from Releases. Install its binary
-into your PATH. Install [Ollama](https://ollama.com/download), start its local
-server and download a model once:
+Install the CLI and local Ollama runtime using the guide. Download a model once:
 
 ```sh
 ollama pull qwen3:4b-instruct-2507-q4_K_M
 ```
 
-Skip the pull if `ollama list` already shows this model. Open a terminal in the
-existing Git project you want help with, then run:
+Skip the pull if `ollama list` already shows it. Open a terminal in your actual
+Git project and launch:
 
 ```sh
-devcompanion init
-devcompanion start
+dot companion --name Pixel --pet cat --style mentor
+dot
 ```
 
-At the `You >` prompt, describe your actual task in plain language. `/help`
-lists conversation actions. Use `/remember` followed by your own goal to save
-it across sessions. `/quit` returns to the shell.
+First use asks before enabling the project. At the prompt, describe your actual
+task. `/help` lists actions; `/home` refreshes your personal dashboard; `/quit`
+returns to the shell. `devcompanion` supports the same commands.
 
-`start` combines local conversation and project awareness. `/file PATH` attaches
-a repository text file; `/remember TEXT` saves an intention; `/quiet` pauses
-awareness; `/quit` ends the session. Capture relevant commands in another terminal
-with `devcompanion run -- COMMAND`.
+## What 0.3 adds
 
-The companion uses a downloaded model. It can produce a proactive briefing
-after a relevant edit or recorded command result, with a 10-second edit debounce
-and at most one automatic inference per 90 seconds. Idle observation invokes no model.
+- Named dot/cat/fox/robot pets or imported text avatars; styles, preferences and
+  local model selection persist. A live `/model NAME` switch saves the new brain.
+- Editable goals and decisions; keyword search and optional local CPU embeddings.
+  Learning proposes guidance from saved user statements, with source evidence.
+  It is off by default; proposals need acceptance before they guide responses.
+- Reviewed edits and new files, explicit registered checks, separately reviewed
+  revisions from actual failures, and rollback that refuses later edits.
+- CPU/context/token/retention/cooldown controls, actual local response measurements,
+  editable usefulness ratings, and explicit suggestions based on current evidence.
+- Opt-in Bash and VS Code process-task adapters, private project JSON export and
+  consistent whole-database backup without overwrites.
 
-## Control and memory
+Local work continues after closing chat while the laptop stays on. Background
+investigation is bounded and cannot run model-generated commands or apply code
+without explicit approval. Proactive awareness uses the selected Git project
+and commands you choose to record. It does not capture desktop activity, ambient
+terminal history or unsaved editor buffers.
 
-Use `/work` followed by your development goal to start a background task.
-The companion investigates existing repository files through your local model.
-`/tasks` lists saved work, `/activity ID` shows progress, and `/review ID` shows
-the result. `/apply ID` explicitly approves a patch; it refuses changed code
-and repeated application. Run the relevant checks afterward.
+## Demonstrated behavior and limits
 
-Closing the conversation does not stop delegated work while the computer stays
-on. Restarting `start` recovers interrupted tasks with fresh repository evidence.
-Use `/cancel ID` to stop a task, or `task retry ID --feedback "your correction"`
-to carry feedback into a fresh investigation. Current tasks are bounded to eight
-model turns and three existing small text files per patch. No generated commands run.
+The static binary passed 52 integration tests, formatting, clippy and real terminal
+checks. A real continuing session without external connectivity exercised model
+switching, identity, reviewed learning, optional semantic retrieval and actual
+CPU token/timing measurements. See the demo and release notes for task evidence.
+These are scripted fixtures, not a general coding-quality benchmark.
 
-User intentions, conversation, code fingerprints, assistant interpretations and
-command outcomes persist locally in SQLite. Earlier interpretations retain their
-original code state. Model suggestions cannot directly run commands.
+Small models can make mistakes, repeat irrelevant context or give poorly worded
+explanations. Review actual diffs and relevant checks. Changes are bounded to
+three small text files and eight investigation turns. Larger changes, broader
+local tools, full editor awareness and a graphical desktop pet remain future work.
+macOS validation is pending. Useful adoption and retention are not established.
 
-Register permitted checks, then inspect and approve a proposal:
+No application telemetry or silent cloud fallback is present. Initial downloads
+need internet; chosen developer commands can themselves depend on network services.
+Exports and backups contain private content; keep them private. Feedback here is
+public, so remove private code and secrets before posting.
 
-```sh
-devcompanion check add tests -- npm test
-devcompanion plan "What should I check before finishing?"
-devcompanion proposals
-devcompanion approve 1
-```
-
-Use the proposal ID displayed for your session. Outdated code, changed action
-definitions, unregistered model actions and repeated approvals are refused.
-
-## What is verified
-
-- Thirty-two integration tests exercise persistence, project isolation, dirty
-  edits, check freshness, timeout/descendant cleanup, output bounds, local
-  streaming, action approval and context retrieval, delegated work after chat
-  closes, task recovery, cancellation, scoped patch review and stale-edit refusal.
-- The real local 4B model investigated a failing calculator test and prepared
-  the correct patch. Explicit approval applied it; the registered test then passed.
-  This is a scripted fixture rather than a general coding benchmark.
-- A real local model explained a reproduced addition bug from a test failure
-  and attached source. A continuing session generated a briefing after an edit.
-- An isolated network smoke test denied external connectivity and completed
-  a local-model answer.
-- Linux x86_64 static binary. macOS validation remains pending.
-
-## Known limits
-
-Small models can make mistakes or return an incomplete explanation even when the proposed patch is valid. Memory retrieval is currently lexical and based
-on recency, with no semantic memory graph. Tasks prepare small reviewed patches;
-unattended implementation/test/revision loops and new-file creation remain future
-work. Captured commands are bounded noninteractive jobs;
-use ordinary terminal tools for servers and interactive programs.
-
-Initial runtime/model downloads require internet. Core operation afterward is
-offline. Your chosen checks may themselves require network services. There is
-no application usage transmission or desktop capture. Read the guide before
-sharing sensitive source or output.
-
-Please report whether it helped a real development task using the feedback
-template. Downloads, stars and verified users are different measurements;
-no adoption count is claimed.
+The archive contains the static CLI, an MIT application license, dependency
+notices and quickstart. It contains no application source or model weights.
