@@ -1,0 +1,39 @@
+name: First-session feedback
+description: Tell us whether the companion helped with a real development task.
+title: "[First session]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for trying the preview. This report is public. Remove secrets and private code."
+  - type: input
+    id: setup
+    attributes:
+      label: Platform and local model
+      placeholder: "Linux x86_64, qwen3:1.7b, CPU or GPU"
+    validations:
+      required: true
+  - type: dropdown
+    id: activation
+    attributes:
+      label: How far did you get?
+      options:
+        - Downloaded but did not run it
+        - Installed and started a session
+        - Used a session on a real development task
+        - Returned for another session
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: What were you trying to finish?
+      description: A short description is enough; no private code needed.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What helped, and what got in the way?
+      description: Include one concrete useful or confusing moment.
+    validations:
+      required: true

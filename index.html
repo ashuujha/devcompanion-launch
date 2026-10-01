@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dev Companion — an offline companion for your development work</title>
+  <meta name="description" content="A free local AI companion that remembers your development work, understands your project and offers timely help. Offline inference, visible awareness and approved actions.">
+  <meta name="theme-color" content="#f4f1eb">
+  <meta property="og:title" content="An AI companion that stays with your work.">
+  <meta property="og:description" content="Local conversation, project memory and proactive help. A free terminal preview for developers.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://ashuujha.github.io/devcompanion-launch/social.png">
+  <link rel="canonical" href="https://ashuujha.github.io/devcompanion-launch/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./fonts.css"><link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav wrap">
+  <a class="brand" href="./" aria-label="Dev Companion home"><span class="mark" aria-hidden="true">d<span>c</span></span>Dev Companion<span class="preview">preview</span></a>
+  <nav aria-label="Main navigation"><a href="#experience">The experience</a><a href="#local">Local by design</a><a class="nav-cta" href="#start">Get started <span aria-hidden="true">↗</span></a></nav>
+</header>
+<main id="main">
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span> A LOCAL COMPANION FOR DEVELOPERS</p>
+    <h1 id="hero-title">An AI companion<br>that stays with<br><span>your work.</span></h1>
+    <p class="lead">Pick up where you left off. Talk through a problem. Get a useful nudge as your project changes. Your companion runs on your machine.</p>
+    <div class="hero-actions"><a class="button" href="#start">Try the free preview <span aria-hidden="true">↗</span></a><a class="text-link" href="#experience">See how it works <span aria-hidden="true">↓</span></a></div>
+    <p class="fine">Linux x86_64 · Local Ollama model · No account required</p>
+  </div>
+  <div class="notebook">
+    <div class="notebook-heading"><span>PROJECT NOTEBOOK</span><span>01 / CONTINUITY</span></div>
+    <div class="terminal" aria-label="Illustrative companion session">
+      <div class="terminal-bar"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">~/projects/calculator</span><span class="local-badge">LOCAL</span></div>
+      <div class="terminal-body"><p><span class="prompt">❯</span> devcompanion start</p><p class="terminal-muted">Remembered goal<br><span class="terminal-white">Fix addition and verify the calculator.</span></p><div class="terminal-divider"></div><p class="speaker">COMPANION</p><p>You were working on the addition bug. The captured test returned <code>-1</code> where it expected <code>5</code>.</p><p class="terminal-muted">After you edit calculator.py…</p><p class="speaker">A USEFUL NEXT STEP</p><p>The function now uses addition. Run your registered tests to check the change.</p><p class="terminal-foot">Suggested action · waiting for your approval</p></div>
+    </div>
+    <div class="notebook-caption"><span>Context comes back with you.</span><span>Illustrative interaction</span></div>
+  </div>
+</section>
+<div class="principles wrap"><span>MEMORY THAT PERSISTS</span><span>VISIBLE PROJECT AWARENESS</span><span>DOWNLOADED LOCAL MODELS</span><span>ACTIONS YOU APPROVE</span></div>
+<section id="experience" class="experience wrap" aria-labelledby="experience-title">
+  <div class="section-intro"><p class="eyebrow">THE EVERYDAY EXPERIENCE</p><h2 id="experience-title">A little more continuity.<br>A lot less starting over.</h2><p>One ongoing terminal session connects your conversations, remembered intentions and current project.</p></div>
+  <div class="experience-grid">
+    <div class="experience-steps" role="tablist" aria-label="Explore the companion">
+      <button class="step active" id="tab-memory" role="tab" aria-selected="true" aria-controls="panel-memory" data-step="memory"><span class="step-number">01</span><span><strong>Remember the thread.</strong><span>Return to your intentions, recent discussion and saved project briefings.</span></span><span class="step-arrow" aria-hidden="true">↗</span></button>
+      <button class="step" id="tab-awareness" role="tab" aria-selected="false" aria-controls="panel-awareness" tabindex="-1" data-step="awareness"><span class="step-number">02</span><span><strong>Stay close to the work.</strong><span>Relevant edits and captured command results inform local, proactive reasoning.</span></span><span class="step-arrow" aria-hidden="true">↗</span></button>
+      <button class="step" id="tab-actions" role="tab" aria-selected="false" aria-controls="panel-actions" tabindex="-1" data-step="actions"><span class="step-number">03</span><span><strong>Move forward deliberately.</strong><span>Discuss code, inspect a proposed action, and decide what runs.</span></span><span class="step-arrow" aria-hidden="true">↗</span></button>
+    </div>
+    <div class="detail-panel">
+      <div id="panel-memory" role="tabpanel" aria-labelledby="tab-memory"><p class="panel-label">A PROJECT WITH HISTORY</p><h3>“Where did I leave off?”</h3><p>Your saved goal and recent conversation return across sessions. The companion reads fresh project context and keeps earlier interpretations tied to their original code state.</p><div class="memory-note"><span class="note-label">REMEMBERED INTENTION</span><p>Keep integer arithmetic simple. Finish fixing addition before changing the interface.</p><span class="note-meta">Saved locally · available next session</span></div><p class="panel-foot">Saved intentions, conversation and assistant briefings have different roles. An interpretation remains an interpretation.</p></div>
+      <div id="panel-awareness" role="tabpanel" aria-labelledby="tab-awareness" hidden><p class="panel-label">HELP AT THE RELEVANT MOMENT</p><h3>“What does this change mean?”</h3><p>While the session is open, the companion observes the selected Git project and a small amount of changed source. Capture a command when you want its output included.</p><div class="memory-note"><span class="note-label">OBSERVE → REMEMBER → REASON</span><p>Code changes settle for 10 seconds. The local model connects new evidence to your work and suggests one useful next step.</p><span class="note-meta">Automatic reasoning: at most once per 90 seconds</span></div><p class="panel-foot">Idle observation makes no model calls. Use <code>/quiet</code> to pause awareness or <code>/quit</code> to end the session.</p></div>
+      <div id="panel-actions" role="tabpanel" aria-labelledby="tab-actions" hidden><p class="panel-label">AN ASSISTANT UNDER YOUR CONTROL</p><h3>“What should I do next?”</h3><p>Ask for a plan. The model can propose an action from checks you registered. You see its exact command and reason before approving it.</p><div class="memory-note"><span class="note-label">PROPOSAL · PENDING</span><p><code>python3 -m unittest -v</code><br>Check the addition change using the registered tests.</p><span class="note-meta">/approve 1 · /reject 1</span></div><p class="panel-foot">Changed code or a changed action definition requires a fresh proposal. Results retain the actual exit status.</p></div>
+    </div>
+  </div>
+</section>
+<section id="local" class="local-section" aria-labelledby="local-title"><div class="wrap local-grid"><div><p class="eyebrow">ON YOUR MACHINE</p><h2 id="local-title">Your project.<br>Your model.<br>Your memory.</h2><p>Download the runtime and model once. Conversation, memory and project awareness then work offline.</p><a class="text-link" href="./guide.html#privacy">See the data boundaries <span aria-hidden="true">↗</span></a></div><div class="local-facts"><article><span>01</span><h3>Local inference</h3><p>A downloaded Ollama model, accessed through loopback HTTP. No silent cloud fallback.</p></article><article><span>02</span><h3>Scoped awareness</h3><p>The selected Git repository and commands you explicitly capture. You can inspect context and stop observation.</p></article><article><span>03</span><h3>Persistent local memory</h3><p>A SQLite database on your machine. Inspect intentions, remove entries or forget a project's records.</p></article><article><span>04</span><h3>Free preview</h3><p>No subscription or usage collection. The application source is currently private; this is an early binary release.</p></article></div></div></section>
+<section id="start" class="start wrap" aria-labelledby="start-title"><div class="section-intro"><p class="eyebrow">FIRST SESSION</p><h2 id="start-title">Give your work a companion.</h2><p>The first preview supports Linux x86_64. A local model is required for conversation. macOS validation is still pending.</p></div><div class="start-grid"><div class="download-card"><span class="release-label">PREVIEW 0.1.0</span><h3>Download for Linux</h3><p>A small CLI, with the model stored separately. Git and Ollama are required.</p><a class="button" href="https://github.com/ashuujha/devcompanion-launch/releases/download/v0.1.0/devcompanion-0.1.0-linux-x86_64.tar.gz">Download preview <span aria-hidden="true">↓</span></a><a class="text-link small-link" href="https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.1.0">Checksums & release notes ↗</a><p class="fine">Read <a href="./guide.html">setup and known limits</a> before your first session.</p></div><div class="setup-card"><div class="setup-title"><span>AFTER INSTALLING THE CLI & OLLAMA</span><button class="copy" data-copy="setup" aria-label="Copy first session commands">Copy commands</button></div><pre id="setup"><code>ollama pull qwen3:1.7b
+cd your-git-project
+devcompanion init --goal "Finish the login flow"
+devcompanion start</code></pre><p>Start <code>ollama serve</code> if your installation does not already run it. Initial setup needs internet. You can select another downloaded model with <code>--model NAME</code>.</p></div></div></section>
+<section class="feedback wrap"><div><p class="eyebrow">BUILT AROUND REAL WORK</p><h2>Tell us where it helped.<br>And where it got in the way.</h2><p>This preview has limits. Small models can make mistakes, memory retrieval is simple, and actions are currently registered checks. Your first-session feedback shapes what comes next.</p></div><a class="button outline" href="https://github.com/ashuujha/devcompanion-launch/issues/new/choose">Share feedback <span aria-hidden="true">↗</span></a></section>
+</main>
+<footer class="wrap"><a class="brand" href="./"><span class="mark" aria-hidden="true">d<span>c</span></span>Dev Companion</a><p>A local companion, built one useful session at a time.</p><div><a href="./guide.html">Guide & privacy</a><a href="https://github.com/ashuujha/devcompanion-launch">Releases & feedback</a></div></footer>
+<p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
+</body></html>

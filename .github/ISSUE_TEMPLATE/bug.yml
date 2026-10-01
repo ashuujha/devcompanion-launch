@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible problem in the preview.
+title: "[Bug]: "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version, platform and model
+      placeholder: "0.1.0, Linux x86_64, qwen3:1.7b"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Use a minimal example without secrets or private code.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Optional sanitized output
+      render: text

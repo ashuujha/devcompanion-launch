@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup and local data guide
+    url: https://ashuujha.github.io/devcompanion-launch/guide.html
+    about: Read installation instructions, data boundaries and known limits.
