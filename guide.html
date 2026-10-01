@@ -1,47 +1,62 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Setup, boundaries and privacy — Dev Companion</title>
-<meta name="description" content="Set up your personal offline developer companion, review its work, control memory and keep private local copies.">
+<meta name="description" content="Set up the Linux developer workflow preview: project presence, real error evidence, reviewed corrections, optional editor diagnostics and local voice.">
 <link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./fonts.css"><link rel="stylesheet" href="./style.css"></head>
 <body><a class="skip" href="#main">Skip to content</a><header class="nav wrap"><a class="brand" href="./">Dev Companion</a><nav aria-label="Main navigation"><a class="nav-cta" href="./">Back to the project ↗</a></nav></header>
-<main id="main" class="guide wrap"><p class="eyebrow">PREVIEW 0.3.1 · FIRST SESSION GUIDE</p>
-<h1>Your local companion,<br>ready for real work.</h1>
-<p>A free Linux x86_64 terminal preview for Git projects. The CLI, local Ollama runtime and downloaded models are separate. macOS validation is pending.</p>
-<h2 id="install">1. Install the CLI</h2>
-<p>Download the archive and SHA256SUMS from the <a href="https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.3.1">release page</a>, then verify and install:</p>
+<main id="main" class="guide wrap"><p class="eyebrow">PREVIEW 0.4.0 · WORKFLOW GUIDE</p>
+<h1>Your local companion,<br>close to the work.</h1>
+<p>An early Linux x86_64 workflow preview for existing Git projects. Each project, terminal session and editor workspace requires explicit enablement. A local model is needed for conversation and proposed corrections; the work desk and reminders work without inference. macOS validation is pending.</p>
+<h2 id="install">1. Verify and install the CLI</h2>
+<p>Download the archive and SHA256SUMS from the <a href="https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.4.0">v0.4.0 release page</a>, then verify the downloaded archive and install:</p>
 <pre><code>sha256sum --check --ignore-missing SHA256SUMS
-tar -xzf devcompanion-0.3.1-linux-x86_64.tar.gz
+tar -xzf devcompanion-0.4.0-linux-x86_64.tar.gz
 mkdir -p "$HOME/.local/bin"
-install -m 755 devcompanion-0.3.1/devcompanion "$HOME/.local/bin/devcompanion"
+install -m 755 devcompanion-0.4.0/devcompanion "$HOME/.local/bin/devcompanion"
 export PATH="$HOME/.local/bin:$PATH"
 ln -s devcompanion "$HOME/.local/bin/dot"
 dot --version</code></pre>
-<p>The optional link refuses to replace an existing <code>dot</code>. Skip it if already linked. <code>devcompanion</code> supports the same commands. An already open session uses its previous binary until you quit and reopen it.</p>
+<p>The optional <code>dot</code> link refuses to replace an existing command; use <code>devcompanion</code> if the name is taken. To update an existing installation, verify the new archive the same way, then install to <code>~/.local/bin/devcompanion.new</code> and rename it over the old binary. This lets open sessions finish on the old version. Quit and reopen chat; if login presence is installed, run <code>dot presence stop</code> followed by <code>dot presence start</code> so the service uses the new binary. There is no built-in <code>dot update</code>.</p>
+<pre><code># Update after verifying SHA256SUMS as above:
+install -m 755 devcompanion-0.4.0/devcompanion "$HOME/.local/bin/devcompanion.new"
+mv "$HOME/.local/bin/devcompanion.new" "$HOME/.local/bin/devcompanion"
+devcompanion --version
+# If you installed login presence, restart it:
+dot presence stop
+dot presence start</code></pre>
 <h2>2. Set up local inference once</h2>
 <p>Install <a href="https://ollama.com/download">Ollama</a>, start its local server and explicitly download a model. Skip the pull if <code>ollama list</code> already shows it.</p>
 <pre><code>ollama serve
 # In another terminal:
 ollama pull qwen3:4b-instruct-2507-q4_K_M</code></pre>
 <p>The tested 4B instruct weights take about 2.5 GB. <code>qwen3:1.7b</code> is a smaller tested option around 1.4 GB. Disk size does not prove memory fit or quality. Initial downloads need internet; core operation afterward uses loopback inference. Use a trusted local runtime; declared remote model delegation and cloud names are refused.</p>
-<h2>3. Make it yours and start</h2>
-<p>Open a terminal in your actual Git project:</p>
-<pre><code>dot companion --name Pixel --pet buddy --pet-color cocoa --style mentor
-dot prefer "Explain one step at a time"
-dot</code></pre>
-<p>First use asks before enabling this project. Noninteractive setup uses <code>dot init</code>. At the conversation prompt, describe your actual task. <code>/help</code> shows actions; <code>/home</code> refreshes the dashboard.</p>
+<h2>3. Enable only the project you choose</h2>
+<p>Open a terminal in an existing Git project. The login service uses the Linux user systemd session; install it once per user, then enable each initialized project separately:</p>
+<pre><code>dot init --goal "Finish the current bug fix"
+dot presence install
+dot presence enable
+dot shell</code></pre>
+<p><code>dot shell</code> is a normal interactive Bash session. It records only commands typed there while the shell is in this enabled Git project, with bounded combined output, actual exit status and before/after Git state. Type <code>exit</code> to leave it. Then use <code>dot desk</code> for open incidents and reminders, or <code>dot</code> for conversation. You can use <code>dot presence disable</code> for this project, <code>dot presence status</code> to inspect the service, and <code>dot presence uninstall</code> to remove the login unit. The service does not call a model, run checks, capture a screen or listen to the microphone.</p>
+<p>Inside chat, use <code>/models</code>, <code>/pets</code> and <code>/companion</code>. Commands beginning with <code>dot</code> belong in your normal terminal. Recognized terminal commands pasted into chat show guidance before model inference; exact read-only forms also show results. Commands with arguments do not run or change settings. Use the explicit slash action, another terminal or <code>/quit</code> first. <code>/companion-name NAME</code> renames your companion; <code>/name NAME</code> changes your own greeting.</p>
 <p>Preview with <code>dot pets</code> or <code>/pets</code>, then choose <code>/pet buddy</code>, <code>cloud</code>, <code>spark</code>, <code>sprout</code>, <code>owl</code>, <code>scholar</code>, <code>dot</code>, <code>cat</code>, <code>fox</code>, <code>robot</code> or <code>none</code>. <code>/pet-color auto|amber|blue|mint|rose|lavender|cocoa</code> saves its color separately from the CLI theme. Auto uses character defaults. Unicode terminals render filled pixel art with true, indexed or basic color; narrow/dumb/redirected terminals use compact text. NO_COLOR keeps a plain silhouette. Import a small UTF-8 pixel pet with <code>companion --avatar PATH</code>: up to eight lines, 48 columns and 2048 bytes. These are original terminal characters with task-state expressions, without 3D rendering or continuous animation. Response styles are concise, friendly and mentor. Name, style and up to ten global preferences guide the local model; a small model can still miss that guidance.</p>
 <details class="pet-preview"><summary>See the terminal pet gallery</summary><img src="./pets-preview.png" alt="Rendered CLI fixture preview of buddy, cloud, spark, sprout, owl and scholar"><p>Rendered from a real terminal capture in a disposable fixture. Artwork is original.</p></details>
 <p><code>/model NAME</code> verifies a downloaded brain, switches the current conversation and saves it. <code>--model NAME</code> is a temporary override. There are no automatic downloads. Running tasks keep their selected model.</p>
-<p>The visible session observes this Git project and explicitly recorded commands. Edits settle for ten seconds; proactive reasoning defaults to at most once per 90 seconds. First use waits for a stated goal, conversation or new observed event before automatic reasoning. Returning sessions can recap saved user context. Idle observation makes no model calls. <code>/quiet</code> saves a quieter default; <code>/assist</code> resumes it. <code>/quit</code> leaves.</p>
-<h2>4. Delegate, review, check and revise</h2>
-<p>Use <code>/work</code> followed by a development goal. A local worker investigates bounded repository text and returns a patch or report. <code>/tasks</code> lists work; <code>/activity ID</code> shows actual activity; <code>/review ID</code> shows the report and diff.</p>
+<p>Inside chat, <code>/incidents</code>, <code>/reminders</code> and <code>/desk</code> open the same work ledger. <code>/quiet 30</code> pauses desktop interruptions; <code>/assist</code> controls chat awareness. First use waits for your stated goal, conversation or new observed event before automatic model reasoning. Idle observation makes no model calls.</p>
+<pre><code>dot remind add --in 20m "Check the migration"
+dot remind snooze ID --in 10m
+dot remind done ID
+dot focus 25
+dot quiet 30</code></pre>
+<p>Reminder IDs come from <code>dot remind list</code>. Focus schedules one optional break reminder; quiet pauses desktop interruptions without deleting evidence or reminders. In chat, <code>/remind 20m Check the migration</code> and <code>/focus 25</code> use the same project.</p>
+<h2>4. Follow an incident to a reviewed correction</h2>
+<p>A failed <code>dot shell</code> command or enabled editor diagnostic becomes an incident with original evidence. Use <code>dot desk</code>, <code>/incidents</code> and <code>/incident ID</code> to inspect it. <code>/fix ID</code> can ask the local model to prepare a bounded correction. <code>/review ID</code> shows its report and diff; <code>/apply ID</code> is a separate approval. You can still start an unrelated delegated goal with <code>/work</code>. Tasks never run model-generated commands.</p>
 <pre><code>dot check add tests -- npm test
 dot task review ID
 dot task apply ID
 dot task verify ID tests
 # After a completed failed task check:
 dot task revise ID</code></pre>
-<p>Use IDs shown for your own tasks. Choose the actual check for your project. Each correction is a separate task requiring review and explicit application. <code>task verify ID tests --revise</code> can prepare it after a failure, but still exits unsuccessfully for the failed check. Chat equivalents: <code>/apply ID</code>, <code>/task-check ID CHECK</code> and <code>/revise ID</code>.</p>
+<p>Use the IDs printed in your own session. A visible editor error clearing is not a passing check. Run an explicit named check, such as <code>dot verify tests</code> after <code>dot check add tests -- npm test</code>. The result is current only for the code state it checked. An older passing run remains historical evidence. A failed named check can feed a separately reviewed <code>task revise ID</code>; it does not approve or apply itself.</p>
 <p><code>task show ID</code> reports current verification separately from historical status. Changed code or check definitions invalidate passing evidence. <code>task rollback ID</code> restores exact task content only on unchanged applied code and refuses later edits. Roll back child tasks before their parent.</p>
 <p>Work can continue after chat closes while the laptop stays on. Returning with <code>start</code> resumes dead queued/running workers using fresh evidence. A dead apply/check/rollback operation needs <code>task recover ID</code>, which marks its result unknown and executes nothing. Inspect files and any surviving check processes before retrying. Old applied tasks from pre-0.3 releases lack the post-application state required by task verification/rollback; ordinary <code>verify CHECK</code> still works.</p>
 <p>Bounds: three active tasks, serialized task inference, eight model turns, up to three small UTF-8 files including new files. Existing files must be at most 32 KiB; individual inserted text is bounded. Supported ordinary paths are required; symlinks, ignored new paths and common secret/dependency paths are excluded. Filename filters cannot recognize every secret. New files cannot overwrite existing files. No model-generated commands run.</p>
@@ -71,11 +86,13 @@ dot rate OTHER_ID unhelpful
 dot route --category explain</code></pre>
 <p>Inspect each actual response before rating. Comparisons record total time, time to first text and actual prompt/output counts when Ollama provides them. Routing suggests the fastest latest response rated useful for the latest identical task, current code/context/settings and unchanged model digest. Add <code>--apply</code> to save the suggestion. It does not infer quality for other tasks or switch automatically. Loading, order and caches affect timings; these are local observations, not standardized benchmarks.</p>
 <p>CPU/auto, context, reply/task token caps, model retention and proactive cooldown are explicit controls. Lower limits can reduce context coverage and answer quality. The default requests ten-minute model retention; Ollama may unload under pressure. <code>models --task TEXT</code> gives model-generated advice; measured <code>route</code> has a separate evidence requirement.</p>
-<h2>7. Optional shell and editor adapters</h2>
-<p><code>dot integration bash</code> prints a function to save and source explicitly. Then <code>d cargo test</code> records that chosen command. It does not capture existing commands or shell history. <code>dot integration vscode</code> prints process tasks for registered checks: merge them into your own <code>.vscode/tasks.json</code>. It does not modify editor settings or watch unsaved buffers. Keep a companion session open in another terminal for awareness.</p>
+<h2 id="editor">7. Optional VS Code diagnostics</h2>
+<p>Download <a href="https://github.com/ashuujha/devcompanion-launch/releases/download/v0.4.0/dot-developer-companion-0.1.0.vsix">dot-developer-companion-0.1.0.vsix</a>, then run <code>code --install-extension dot-developer-companion-0.1.0.vsix</code>. Open a trusted workspace in an initialized Git project and choose <strong>Dot: Enable Editor Diagnostics for Workspace</strong> from the VS Code command palette. Disable it there when finished. The extension sends bounded diagnostic messages, file paths, lines, severity and saved state; it sends no source buffers. VS Code must be open to provide diagnostics. A diagnostic can clear without a compiler or named check passing.</p>
+<h2 id="voice">8. Optional local voice</h2>
+<p><code>dot voice setup</code> downloads and installs local Whisper speech recognition and Piper speech synthesis once. <code>dot voice status</code> reports audio tools. <code>/voice</code> in chat or <code>dot voice ask</code> starts an explicit microphone turn; <code>dot voice ask --audio question.wav</code> uses a file instead. It is English-only and never listens continuously. Generated audio passed the transcription/model/synthesis path; a real microphone, playback and speaking comfort still need hands-on validation. See the <a href="https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.4.0">release notes</a> for optional dependencies.</p>
 <h2 id="privacy">Local data and private copies</h2>
 <p>The default database is <code>~/.local/share/devcompanion/state.sqlite3</code>, or <code>$XDG_DATA_HOME/devcompanion/</code>. <code>DEVCOMPANION_HOME</code> relocates it. Storage and output copies use owner-only permissions.</p>
-<ul><li>Stored per project: goals/decisions, latest 200 messages, 200 bounded command records, 50 briefings, 200 model measurements, proposals, optional vectors, learned suggestions with user evidence, tasks/activity/reports and original/proposed file text.</li><li>Identity, pet, style, model, proactive/learning defaults, resource budgets and global preferences share the local database. <code>forget</code> retains global settings and preferences; <code>unprefer ID</code> removes a preference.</li><li>Command capture retains the latest 64 KiB per output stream. <code>run --no-save -- COMMAND</code> avoids saving that command's record. Conversation, source and command output can contain sensitive information.</li><li>Context includes bounded source/manifests, tracked file names and commit subjects. Awareness can read two small changed files; explicit attachments can cover three repository files.</li><li>No desktop capture, ambient terminal history capture, silent cloud fallback or application usage transmission.</li></ul>
+<ul><li>Stored per project: goals and decisions, bounded conversation and runs, open and cleared incidents, reminders, activity, task reports and proposed file text. The database retains at most 200 recent run records per project; do not treat it as a general shell history.</li><li>Identity, pet, style, model, proactive/learning defaults and global preferences share the local database. <code>forget</code> retains global settings and preferences; <code>unprefer ID</code> removes a preference.</li><li><code>dot shell</code> stores up to 64 KiB of combined PTY output per command; normal <code>dot run</code> bounds each output stream. Commands and output can contain secrets. A shell process can access files outside its working directory; project attribution is not a sandbox.</li><li>Editor diagnostics contain paths, lines and messages but no source buffers. The service retains project events only after explicit enablement. <code>dot voice</code> uses explicit recording and local engines; no always-on microphone.</li><li>No desktop capture, retrospective shell history import, silent cloud fallback or application usage telemetry.</li></ul>
 <pre><code>dot privacy
 dot data export /private/path/project.json
 dot data export /private/path/project-with-guidance.json --include-personalization
@@ -85,8 +102,8 @@ dot forget --yes</code></pre>
 <p>To inspect a backup safely, use a separate data directory with a copy named <code>state.sqlite3</code> and point <code>DEVCOMPANION_HOME</code> there. Do not replace a live database while tasks run.</p>
 <p>This site has no analytics script and uses self-hosted fonts. GitHub hosts downloads and public feedback; its own logging and terms apply. Remove private content before submitting feedback.</p>
 <h2 id="limits">Evidence and remaining limits</h2>
-<p>The static binary passed 54 integration tests, real terminal checks and a continuing session without external connectivity. The real 4B model proposed a project decision from a user statement; optional local embeddings retrieved it. Actual CPU response counters were captured for two models. See the <a href="./demo.txt">recorded workflow</a> and release notes for task evidence.</p>
-<div class="notice"><p>Small models can produce wrong or poorly worded answers even when a patch is valid. Review actual changes and relevant checks. Larger edits, broader local tools, a full editor extension, a desktop or 3D pet and general autonomous completion remain future work. This is an early preview; user retention and broad coding quality are not established.</p></div>
-<p>Recorded commands are noninteractive jobs with no stdin and a default 120-second timeout; process groups stop on timeout, cancellation or completion. Use them for checks rather than servers or interactive prompts. Your own chosen commands can require internet.</p>
+<p>This preview has exercised real PTY failure capture, opted-in editor diagnostics, the login service, reminders and the generated-audio voice path. The <a href="./demo.txt">recorded v0.4 local-model fixture</a> completed a real failed test → incident → reviewed calculator correction → passing unchanged named check. A returning generated-audio voice turn used the saved evidence. These local-engine evaluations were not network-isolated and do not establish general coding quality or adoption.</p>
+<div class="notice"><p>Local models can produce wrong or poorly worded answers even when a patch applies. Review the diff and run the checks that matter. Editor diagnostics can be stale; a cleared diagnostic and an old passing check are separate from current verification. A graphical desktop pet, broad autonomous completion and microphone comfort validation remain outside this preview.</p></div>
+<p><code>dot run</code> commands are bounded noninteractive jobs with no stdin and a default 120-second timeout. <code>dot shell</code> is interactive, has no job timeout, and retains only selected-project prompt commands. Its Bash hooks can be changed by user shell customizations; attribution is best effort and not a security boundary. Your chosen checks may need network access.</p>
 <h2>Feedback and support</h2><p>Report what you tried and whether it helped finish a real task through <a href="https://github.com/ashuujha/devcompanion-launch/issues/new/choose">first-session feedback or bug templates</a>. Include model and platform details without private code. The application source remains private; the free archive includes an MIT application license and dependency notices.</p>
 <a class="button" href="./#start">Get the preview ↗</a></main><footer class="wrap"><a href="./">Dev Companion</a><a href="https://github.com/ashuujha/devcompanion-launch">Releases & feedback ↗</a></footer></body></html>

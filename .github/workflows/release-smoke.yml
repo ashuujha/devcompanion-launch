@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.3.1' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.4.0' }}
     steps:
       - name: Download and verify the public release
         run: |
@@ -19,6 +19,9 @@ jobs:
           PREVIEW_ARCHIVE="devcompanion-$PREVIEW_VERSION-linux-x86_64.tar.gz"
           curl --fail --location "$RELEASE_URL/$PREVIEW_ARCHIVE" --output "$PREVIEW_ARCHIVE"
           curl --fail --location "$RELEASE_URL/SHA256SUMS" --output SHA256SUMS
+          if [[ "$PREVIEW_TAG" == v0.4.* ]]; then
+            curl --fail --location "$RELEASE_URL/dot-developer-companion-0.1.0.vsix" --output dot-developer-companion-0.1.0.vsix
+          fi
           sha256sum --check SHA256SUMS
           tar -xzf "$PREVIEW_ARCHIVE"
           "./devcompanion-$PREVIEW_VERSION/devcompanion" --version
@@ -47,9 +50,14 @@ jobs:
             "$CLI_PATH" task list
             "$CLI_PATH" --help | grep -F 'work'
           fi
-          if [[ "$PREVIEW_TAG" == v0.3.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.3.* || "$PREVIEW_TAG" == v0.4.* ]]; then
             "$CLI_PATH" companion --name Pixel --pet buddy --pet-color cocoa --learning off
             "$CLI_PATH" pets
+            printf 'dot pet name\ndot companion --name Changed\ndot run -- touch must-not-run\n/quit\n' | "$CLI_PATH" --ollama-url http://127.0.0.1:1 chat | tee "$RUNNER_TEMP/chat-command-guidance.txt"
+            grep -F "You're inside chat" "$RUNNER_TEMP/chat-command-guidance.txt"
+            grep -F 'buddy' "$RUNNER_TEMP/chat-command-guidance.txt"
+            "$CLI_PATH" companion | grep -F 'Pixel'
+            test ! -e must-not-run
             "$CLI_PATH" memory add "Keep the smoke check local"
             "$CLI_PATH" memory search smoke
             "$CLI_PATH" resources --device cpu --context 4096
@@ -58,6 +66,21 @@ jobs:
             "$CLI_PATH" data backup "$RUNNER_TEMP/state-backup.sqlite3"
             test -s "$RUNNER_TEMP/project-export.json"
             test -s "$RUNNER_TEMP/state-backup.sqlite3"
+          fi
+          if [[ "$PREVIEW_TAG" == v0.4.* ]]; then
+            "$CLI_PATH" presence status --json
+            "$CLI_PATH" presence enable
+            "$CLI_PATH" remind add --in 20m "Review smoke result"
+            "$CLI_PATH" focus 25
+            "$CLI_PATH" quiet 0
+            printf '%s\n' '{"schema_version":1,"documents":[{"path":"note.txt","version":1,"saved":true,"diagnostics":[{"line":1,"column":1,"severity":"error","message":"Release smoke diagnostic"}]}]}' | "$CLI_PATH" diagnostics ingest --source vscode --replace --stdin
+            "$CLI_PATH" incident list --json | tee "$RUNNER_TEMP/incidents.json"
+            grep -F 'Release smoke diagnostic' "$RUNNER_TEMP/incidents.json"
+            printf '%s\n' '{"schema_version":1,"documents":[]}' | "$CLI_PATH" diagnostics ingest --source vscode --replace --stdin
+            "$CLI_PATH" incident list --all --json | grep -F 'cleared'
+            "$CLI_PATH" voice status
+            "$CLI_PATH" desk --json
+            "$CLI_PATH" presence disable
           fi
           "$CLI_PATH" forget --yes
           test -f note.txt
