@@ -3,7 +3,7 @@
 This free Linux x86_64 preview needs Git. A downloaded local model is needed
 only for explanations and corrections. The application source is private.
 
-1. Install the [verified v0.7 archive](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.7.0)
+1. Install the [verified v0.7 archive](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.7.1)
    using the [guide](https://ashuujha.github.io/devcompanion-launch/guide.html).
    Existing installations can use `dot update`. For the optional desktop, check
    GTK readiness with `dot desktop check`.
