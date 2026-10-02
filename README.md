@@ -8,11 +8,11 @@ can request a small correction for review. Reminders and
 focus breaks remain available between conversations. The pet and companion name
 are optional ways to make it feel familiar; the same local work ledger carries the context.
 
-**v0.5.0 workflow preview for Linux x86_64.** This repository contains public
+**v0.6.0 workflow preview for Linux x86_64.** This repository contains public
 launch assets, feedback templates and binary releases. The application source
 is currently private.
 
-- [Download, checksums and release notes](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.5.0)
+- [Download, checksums and release notes](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.6.0)
 - [Setup, update and privacy guide](https://ashuujha.github.io/devcompanion-launch/guide.html)
 - [Recorded v0.5 local-model workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt)
 - [Join the first developer trials](https://github.com/ashuujha/devcompanion-launch/issues/1)
@@ -20,7 +20,7 @@ is currently private.
 
 ## Start with a real project
 
-Verify and install the [Linux archive](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.5.0/devcompanion-0.5.0-linux-x86_64.tar.gz)
+Verify and install the [Linux archive](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.6.0/devcompanion-0.6.0-linux-x86_64.tar.gz)
 using the guide. Ollama and a downloaded local model are needed for conversation
 and proposed corrections; reminders and incident recording work without inference. Background model
 investigation requires `proactive enable`. In an existing Git repository:
@@ -39,7 +39,7 @@ background observation for this project; `dot presence uninstall` removes the
 login service. Both require your explicit action.
 
 For VS Code, download the optional
-[diagnostics extension](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.5.0/dot-developer-companion-0.1.0.vsix),
+[diagnostics extension](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.6.0/dot-developer-companion-0.1.0.vsix),
 install it with `code --install-extension dot-developer-companion-0.1.0.vsix`,
 trust the workspace and run **Dot: Enable Editor Diagnostics for Workspace**.
 The editor must be open to supply diagnostics. The extension sends bounded
@@ -67,11 +67,48 @@ buffers. Disable it from the command palette when you want it to stop.
   `dot remind done ID` keep small commitments visible. `/focus 25` schedules
   one break reminder; `/quiet 30` pauses desktop interruptions.
 
-Optional English voice is an explicit turn, not continuous listening:
-`dot voice setup` installs local Whisper and Piper components once, then
-`/voice` or `dot voice ask` records when requested and speaks a short answer.
-The generated-audio transcription and synthesis path has been tested; microphone,
-playback and listening comfort still need hands-on validation.
+## Catch secrets before publishing
+
+In the Git project you want to protect:
+
+```sh
+dot guard setup             # one pinned, checksum-verified detector download
+dot guard check             # working-tree text and essential hygiene
+dot guard enable            # install local commit/push protection
+```
+
+`dot guard scan --staged` checks full changed files from Git's index, including
+secrets absent from the working copy. Pushes inspect outgoing commit history,
+including a secret removed before a new branch is published. Existing hooks
+keep their arguments, input and exit status. Reports withhold secret values.
+Missing tools, invalid reports and exceeded limits stop guarded operations.
+`dot guard status` shows readiness; `dot guard disable` restores the earlier
+hooks setting. `dot secure` and `devcompanion guard` also work.
+
+Checks run locally without Ollama or internet after setup. They cover known
+credential patterns, tracked environment files and a small set of warnings.
+They can have false positives and miss unknown secrets; local hooks can be
+bypassed. This is essential hygiene, not a full security audit or hosted GitHub
+configuration. If a credential was already published, revoke it at its provider.
+
+## Keep a voice conversation open
+
+`dot voice setup` downloads the optional English Whisper/Piper runtime once.
+In an initialized Git project:
+
+```sh
+dot voice chat               # Enter starts each follow-up
+dot voice chat --continuous  # listen again between replies
+```
+
+Inside chat, use `/voice` or `/voice continuous`. Recording stops during
+transcription, reasoning and playback. Silence skips model requests. Press
+`q` then Enter, press Ctrl+C, or say exactly “exit voice” to leave voice mode.
+`dot voice ask --once` keeps the single-turn option. The microphone is off
+outside explicitly opened voice mode. This is turn-based speech, without a
+wake word or interruption during playback. Controlled two-turn, silence and
+microphone cleanup tests passed; physical microphone and room comfort need
+hands-on validation.
 
 ## Evidence and limits
 

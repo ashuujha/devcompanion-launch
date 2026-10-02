@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.5.0' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.6.0' }}
     steps:
       - name: Download and verify the public release
         run: |
@@ -19,7 +19,7 @@ jobs:
           PREVIEW_ARCHIVE="devcompanion-$PREVIEW_VERSION-linux-x86_64.tar.gz"
           curl --fail --location "$RELEASE_URL/$PREVIEW_ARCHIVE" --output "$PREVIEW_ARCHIVE"
           curl --fail --location "$RELEASE_URL/SHA256SUMS" --output SHA256SUMS
-          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
             curl --fail --location "$RELEASE_URL/dot-developer-companion-0.1.0.vsix" --output dot-developer-companion-0.1.0.vsix
           fi
           sha256sum --check SHA256SUMS
@@ -50,7 +50,7 @@ jobs:
             "$CLI_PATH" task list
             "$CLI_PATH" --help | grep -F 'work'
           fi
-          if [[ "$PREVIEW_TAG" == v0.3.* || "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.3.* || "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
             "$CLI_PATH" companion --name Pixel --pet buddy --pet-color cocoa --learning off
             "$CLI_PATH" pets
             printf 'dot pet name\ndot companion --name Changed\ndot run -- touch must-not-run\n/quit\n' | "$CLI_PATH" --ollama-url http://127.0.0.1:1 chat | tee "$RUNNER_TEMP/chat-command-guidance.txt"
@@ -67,7 +67,7 @@ jobs:
             test -s "$RUNNER_TEMP/project-export.json"
             test -s "$RUNNER_TEMP/state-backup.sqlite3"
           fi
-          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
             "$CLI_PATH" presence status --json
             "$CLI_PATH" presence enable
             "$CLI_PATH" remind add --in 20m "Review smoke result"
@@ -82,7 +82,7 @@ jobs:
             "$CLI_PATH" desk --json
             "$CLI_PATH" presence disable
           fi
-          if [[ "$PREVIEW_TAG" == v0.5.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
             "$CLI_PATH" --ollama-url http://127.0.0.1:1 setup --json | tee "$RUNNER_TEMP/setup.json"
             grep -F '"memory_enabled": true' "$RUNNER_TEMP/setup.json"
             "$CLI_PATH" trial start
@@ -96,6 +96,40 @@ jobs:
             "$CLI_PATH" presence disable
             PREVIEW_VERSION="${PREVIEW_TAG#v}"
             "$CLI_PATH" update --check --from-archive "$GITHUB_WORKSPACE/devcompanion-$PREVIEW_VERSION-linux-x86_64.tar.gz" --checksum "$GITHUB_WORKSPACE/SHA256SUMS"
+          fi
+          if [[ "$PREVIEW_TAG" == v0.6.* ]]; then
+            "$CLI_PATH" guard status --json
+            "$CLI_PATH" guard setup
+            "$CLI_PATH" guard enable
+            python3 - <<'PYTEST'
+          from pathlib import Path
+          Path('synthetic-token.py').write_text('token = "' + 'ghp_' + 'A8xZ3kM9qV5bR2tY6nW4cF7jL0dS1pH5eG9u' + '"\n')
+          PYTEST
+            git add synthetic-token.py
+            if "$CLI_PATH" guard scan --staged --json > "$RUNNER_TEMP/guard-report.json"; then
+              echo "Expected a blocked synthetic credential scan" >&2
+              exit 1
+            fi
+            BEFORE_COMMIT=$(git rev-parse HEAD)
+            if git commit -m 'Must block synthetic credential' > "$RUNNER_TEMP/guard-commit.txt" 2>&1; then
+              echo "Expected the installed pre-commit hook to block" >&2
+              exit 1
+            fi
+            test "$(git rev-parse HEAD)" = "$BEFORE_COMMIT"
+            python3 - <<'PYTEST'
+          import json, os
+          from pathlib import Path
+          text = (Path(os.environ['RUNNER_TEMP']) / 'guard-report.json').read_text()
+          report = json.loads(text)
+          assert report['known_pattern_findings'] >= 1, report
+          assert 'ghp_' + 'A8xZ3kM9qV5bR2tY6nW4cF7jL0dS1pH5eG9u' not in text
+          hook_text = (Path(os.environ['RUNNER_TEMP']) / 'guard-commit.txt').read_text()
+          assert 'ghp_' + 'A8xZ3kM9qV5bR2tY6nW4cF7jL0dS1pH5eG9u' not in hook_text
+          PYTEST
+            git reset -- synthetic-token.py
+            rm synthetic-token.py
+            "$CLI_PATH" guard disable
+            "$CLI_PATH" voice chat --help | grep -F -- '--continuous'
           fi
           "$CLI_PATH" forget --yes
           test -f note.txt
