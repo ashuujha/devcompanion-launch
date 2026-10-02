@@ -8,9 +8,9 @@ permissions:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.6.0' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.7.0' }}
     steps:
       - name: Download and verify the public release
         run: |
@@ -19,7 +19,7 @@ jobs:
           PREVIEW_ARCHIVE="devcompanion-$PREVIEW_VERSION-linux-x86_64.tar.gz"
           curl --fail --location "$RELEASE_URL/$PREVIEW_ARCHIVE" --output "$PREVIEW_ARCHIVE"
           curl --fail --location "$RELEASE_URL/SHA256SUMS" --output SHA256SUMS
-          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* || "$PREVIEW_TAG" == v0.7.* ]]; then
             curl --fail --location "$RELEASE_URL/dot-developer-companion-0.1.0.vsix" --output dot-developer-companion-0.1.0.vsix
           fi
           sha256sum --check SHA256SUMS
@@ -50,7 +50,7 @@ jobs:
             "$CLI_PATH" task list
             "$CLI_PATH" --help | grep -F 'work'
           fi
-          if [[ "$PREVIEW_TAG" == v0.3.* || "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.3.* || "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* || "$PREVIEW_TAG" == v0.7.* ]]; then
             "$CLI_PATH" companion --name Pixel --pet buddy --pet-color cocoa --learning off
             "$CLI_PATH" pets
             printf 'dot pet name\ndot companion --name Changed\ndot run -- touch must-not-run\n/quit\n' | "$CLI_PATH" --ollama-url http://127.0.0.1:1 chat | tee "$RUNNER_TEMP/chat-command-guidance.txt"
@@ -67,7 +67,7 @@ jobs:
             test -s "$RUNNER_TEMP/project-export.json"
             test -s "$RUNNER_TEMP/state-backup.sqlite3"
           fi
-          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.4.* || "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* || "$PREVIEW_TAG" == v0.7.* ]]; then
             "$CLI_PATH" presence status --json
             "$CLI_PATH" presence enable
             "$CLI_PATH" remind add --in 20m "Review smoke result"
@@ -82,7 +82,7 @@ jobs:
             "$CLI_PATH" desk --json
             "$CLI_PATH" presence disable
           fi
-          if [[ "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.5.* || "$PREVIEW_TAG" == v0.6.* || "$PREVIEW_TAG" == v0.7.* ]]; then
             "$CLI_PATH" --ollama-url http://127.0.0.1:1 setup --json | tee "$RUNNER_TEMP/setup.json"
             grep -F '"memory_enabled": true' "$RUNNER_TEMP/setup.json"
             "$CLI_PATH" trial start
@@ -97,7 +97,7 @@ jobs:
             PREVIEW_VERSION="${PREVIEW_TAG#v}"
             "$CLI_PATH" update --check --from-archive "$GITHUB_WORKSPACE/devcompanion-$PREVIEW_VERSION-linux-x86_64.tar.gz" --checksum "$GITHUB_WORKSPACE/SHA256SUMS"
           fi
-          if [[ "$PREVIEW_TAG" == v0.6.* ]]; then
+          if [[ "$PREVIEW_TAG" == v0.6.* || "$PREVIEW_TAG" == v0.7.* ]]; then
             "$CLI_PATH" guard status --json
             "$CLI_PATH" guard setup
             "$CLI_PATH" guard enable
@@ -130,6 +130,47 @@ jobs:
             rm synthetic-token.py
             "$CLI_PATH" guard disable
             "$CLI_PATH" voice chat --help | grep -F -- '--continuous'
+          fi
+          if [[ "$PREVIEW_TAG" == v0.7.* ]]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq python3-gi gir1.2-gtk-3.0 librsvg2-common xvfb
+            "$CLI_PATH" desktop check
+            python3 - <<'PYTEST'
+          import json, os, subprocess
+          child = subprocess.Popen([os.environ['CLI_PATH'], '--ollama-url', 'http://127.0.0.1:1', 'desktop', 'serve'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+          for request_id, operation in enumerate(['project.open', 'snapshot'], 1):
+              child.stdin.write(json.dumps({'version': 1, 'id': request_id, 'operation': operation, 'params': {'project': os.getcwd()}}) + '\n')
+              child.stdin.flush()
+              frame = json.loads(child.stdout.readline())
+              assert frame['ok'] and frame['id'] == request_id, frame
+              assert frame['result']['schema_version'] == 1
+              assert not frame['result']['permissions']['cloud']
+              assert not frame['result']['permissions']['screens']
+          child.stdin.close()
+          assert child.wait(timeout=10) == 0
+          PYTEST
+            xvfb-run -a python3 - <<'PYTEST'
+          import importlib.util, os
+          from pathlib import Path
+          from types import SimpleNamespace
+          from gi.repository import GLib
+          frontend = Path.home() / '.local/lib/devcompanion-desktop/companion.py'
+          spec = importlib.util.spec_from_file_location('desktop', frontend)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          app = module.Companion(SimpleNamespace(engine=os.environ['CLI_PATH'], endpoint='http://127.0.0.1:1', model=None, project=os.getcwd()))
+          observed = []
+          def inspect():
+              if not app.snapshot:
+                  return True
+              observed.append(app.snapshot['goals'][0]['text'] == 'Verify the published binary' and app.dot.get_visible() and app.dot_pet.get_pixbuf() is not None and not app.error_text)
+              app.quit()
+              return False
+          GLib.timeout_add(200, inspect)
+          GLib.timeout_add_seconds(15, lambda: app.quit() or False)
+          app.run(['release-desktop-smoke', os.getcwd()])
+          assert observed == [True], observed
+          PYTEST
           fi
           "$CLI_PATH" forget --yes
           test -f note.txt

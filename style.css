@@ -5,3 +5,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
 .terminal-identity{display:flex;align-items:center;gap:18px;margin-bottom:18px}.terminal-identity p{margin:0}.terminal-pet{flex-shrink:0;image-rendering:pixelated;object-fit:contain}.pet-preview{margin:24px 0}.pet-preview summary{cursor:pointer;font-weight:600}.pet-preview img{display:block;max-width:100%;height:auto;margin-top:16px;border-radius:6px}
+
+.desktop-preview{padding-top:80px;padding-bottom:80px}.desktop-shots{display:grid;grid-template-columns:minmax(0,.65fr) minmax(0,1fr);gap:24px;align-items:start}.desktop-shots figure{margin:0}.desktop-shots img{display:block;width:100%;height:auto;border:1px solid #d8d3cb;border-radius:14px}.desktop-shots figcaption{padding-top:12px;color:#555f58;font-size:14px}@media(max-width:720px){.desktop-shots{grid-template-columns:1fr}.desktop-preview{padding-top:48px;padding-bottom:48px}}
