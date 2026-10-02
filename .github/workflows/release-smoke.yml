@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.8.2' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.8.3' }}
     steps:
       - name: Download and verify the public release
         run: |
