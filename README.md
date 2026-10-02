@@ -8,11 +8,11 @@ can request a small correction for review. Reminders and
 focus breaks remain available between conversations. The pet and companion name
 are optional ways to make it feel familiar; the same local work ledger carries the context.
 
-**v0.8.0 workflow preview for Linux x86_64.** This repository contains public
+**v0.8.1 workflow preview for Linux x86_64.** This repository contains public
 launch assets, feedback templates and binary releases. The application source
 is currently private.
 
-- [Download, checksums and release notes](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.8.0)
+- [Download, checksums and release notes](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.8.1)
 - [Setup, update and privacy guide](https://ashuujha.github.io/devcompanion-launch/guide.html)
 - [Recorded v0.5 local-model workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt)
 - [Join the first developer trials](https://github.com/ashuujha/devcompanion-launch/issues/1)
@@ -21,13 +21,15 @@ is currently private.
 ## A desktop place for ongoing work
 
 The native Linux dot, quick panel and graphical work
-desk to the existing engine. Give it project work, dismiss the panel, then review
+desk share the existing engine. Give it project work, dismiss the panel, then review
 the actual source ranges, model report and proposed diff. Application and named
 checks require separate approvals. The same goals, task IDs and outcomes remain
 available in the CLI. Source-analysis requests need real reads; explicit
-analysis-only tasks reject edits. Version 0.8 adds a calmer forest work desk,
-original pixel companions, starter prompts, a local model picker, a hide control,
-and an optional push-to-talk shortcut. Larger-project model accuracy remains unproven.
+analysis-only tasks reject edits. The desk now has an off-white/black day theme
+and a saved forest night theme. It also has original pixel companions, starter
+prompts, a local model picker, a hide control and an optional push-to-talk
+shortcut. The selected pet smiles and moves briefly on hover. Larger-project
+model accuracy remains unproven.
 
 ```sh
 # After binary/local-model setup, in your chosen Git project:
@@ -45,11 +47,12 @@ the companion has focus, then release to finish; Esc cancels. Personalize offers
 an optional session shortcut through the desktop permission dialog. Hide pet
 removes its visible character and the panel can show it again. The model picker
 lists downloaded local completion models; switching does not rewrite existing
-tasks. Physical voice and global shortcut comfort still need people to try them.
+tasks. Switch day/night with the desk header button or focused Ctrl+Shift+N.
+Physical voice and global shortcut comfort still need people to try them.
 
 ![Native companion quick panel in a controlled-model fixture](desktop-panel.png)
 
-The picture is an actual v0.8 GTK interface with a controlled model; it demonstrates
+The picture is an actual v0.8.1 GTK interface with a controlled model; it demonstrates
 the review workflow, not inference quality. A real local-model evaluation on the
 larger Offline-GPT repository retained an incorrect test interpretation and
 ended with an explicitly unverified result. Independent everyday usefulness
@@ -57,7 +60,7 @@ and retention remain unmeasured.
 
 ## Start with a real project
 
-Verify and install the [Linux archive](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.8.0/devcompanion-0.8.0-linux-x86_64.tar.gz)
+Verify and install the [Linux archive](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.8.1/devcompanion-0.8.1-linux-x86_64.tar.gz)
 using the guide. Ollama and a downloaded local model are needed for conversation
 and proposed corrections; reminders and incident recording work without inference. Background model
 investigation requires `proactive enable`. In an existing Git repository:
@@ -76,7 +79,7 @@ background observation for this project; `dot presence uninstall` removes the
 login service. Both require your explicit action.
 
 For VS Code, download the optional
-[diagnostics extension](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.8.0/dot-developer-companion-0.1.0.vsix),
+[diagnostics extension](https://github.com/ashuujha/devcompanion-launch/releases/download/v0.8.1/dot-developer-companion-0.1.0.vsix),
 install it with `code --install-extension dot-developer-companion-0.1.0.vsix`,
 trust the workspace and run **Dot: Enable Editor Diagnostics for Workspace**.
 The editor must be open to supply diagnostics. The extension sends bounded

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.8.0' }}
+      PREVIEW_TAG: ${{ github.event.release.tag_name || 'v0.8.1' }}
     steps:
       - name: Download and verify the public release
         run: |
@@ -146,6 +146,14 @@ jobs:
               assert frame['result']['schema_version'] == 1
               assert not frame['result']['permissions']['cloud']
               assert not frame['result']['permissions']['screens']
+          child.stdin.write(json.dumps({'version': 1, 'id': 3, 'operation': 'desktop.preferences', 'params': {'theme': 'night', 'confirm': True}}) + '\n')
+          child.stdin.flush()
+          frame = json.loads(child.stdout.readline())
+          assert frame['ok'] and frame['result']['theme'] == 'night', frame
+          child.stdin.write(json.dumps({'version': 1, 'id': 4, 'operation': 'snapshot', 'params': {'project': os.getcwd()}}) + '\n')
+          child.stdin.flush()
+          frame = json.loads(child.stdout.readline())
+          assert frame['ok'] and frame['result']['desktop']['theme'] == 'night', frame
           child.stdin.close()
           assert child.wait(timeout=10) == 0
           PYTEST
