@@ -1,100 +1,137 @@
-DEV COMPANION 0.4.0 — RECORDED LOCAL DEVELOPER WORKFLOW
+DEV COMPANION 0.5.0 — RECORDED LOCAL WORKFLOW
 
-Excerpted commands and outputs; local paths redacted and status JSON summarized.
-One scripted Python fixture, not a general coding-quality benchmark.
-Model: qwen3:4b-instruct-2507-q4_K_M via local Ollama.
-Local inference; this evaluation was not network-isolated.
-The maker inspected the diff before applying it. Tests were never changed.
-One unittest method contains two addition assertions.
+Excerpted commands/outputs from a maker evaluation; private paths redacted,
+status JSON summarized. This is not an independent developer trial or a
+coding-quality benchmark. Local inference; this run was not network-isolated.
+Model: qwen3:4b-instruct-2507-q4_K_M
+Model digest: 0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0
 
-$ dot check add tests -- python3 -m unittest -v
-Registered 'tests': python3 -m unittest -v
-It will run only when you invoke verify.
+A multi-file Python billing fixture contains catalogue, money, pricing and
+invoice modules, an app and two unittest modules. Nine tests, three failures.
+Presence was running separately; no companion chat was open.
 
-$ dot verify tests --json
-Recorded run #1: exit 1
-test_add (test_calc.AdditionTest.test_add) ... FAIL
+$ dot check add invoice-tests -- python3 -m unittest discover -s tests -v
+$ dot verify invoice-tests
+Recorded run #1, exit 1. Original output:
+
+Recorded [run:1] · exit 1 · 108 ms
+Ask for help with `devcompanion explain`, or continue in `devcompanion chat`.
+test_discount_reduces_total (test_invoice.InvoiceTests.test_discount_reduces_total) ... FAIL
+test_empty_basket (test_invoice.InvoiceTests.test_empty_basket) ... ok
+test_full_discount (test_invoice.InvoiceTests.test_full_discount) ... FAIL
+test_no_discount (test_invoice.InvoiceTests.test_no_discount) ... ok
+test_catalogue_quantity (test_pricing.PricingTests.test_catalogue_quantity) ... ok
+test_discount_rounds_to_cents (test_pricing.PricingTests.test_discount_rounds_to_cents) ... FAIL
+test_excess_discount_rejected (test_pricing.PricingTests.test_excess_discount_rejected) ... ok
+test_negative_discount_rejected (test_pricing.PricingTests.test_negative_discount_rejected) ... ok
+test_unknown_product_rejected (test_pricing.PricingTests.test_unknown_product_rejected) ... ok
 
 ======================================================================
-FAIL: test_add (test_calc.AdditionTest.test_add)
+FAIL: test_discount_reduces_total (test_invoice.InvoiceTests.test_discount_reduces_total)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "[evaluation project]/test_calc.py", line 6, in test_add
-    self.assertEqual(add(2, 3), 5)
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
-AssertionError: -1 != 5
+  File "[evaluation project]/tests/test_invoice.py", line 6, in test_discount_reduces_total
+    self.assertEqual(invoice_total([("keyboard", 2), ("mouse", 1)], 0.2), 100.0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 150.0 != 100.0
+
+======================================================================
+FAIL: test_full_discount (test_invoice.InvoiceTests.test_full_discount)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[evaluation project]/tests/test_invoice.py", line 10, in test_full_discount
+    self.assertEqual(invoice_total([("keyboard", 1)], 1), 0.0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 100.0 != 0.0
+
+======================================================================
+FAIL: test_discount_rounds_to_cents (test_pricing.PricingTests.test_discount_rounds_to_cents)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[evaluation project]/tests/test_pricing.py", line 7, in test_discount_rounds_to_cents
+    self.assertEqual(discounted_total(19.99, 0.1), 17.99)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 21.99 != 17.99
 
 ----------------------------------------------------------------------
-Ran 1 test in 0.000s
+Ran 9 tests in 0.002s
 
-FAILED (failures=1)
+FAILED (failures=3)
 
-$ dot incident explain 1
+$ dot proactive show 1
+Insight #1 · incident #1 · ready
+Observed: tests/test_invoice.py:6:1: AssertionError: 150.0 != 100.0
+Hypothesis: The discount calculation in invoice_total is incorrectly applying the discount rate as a multiplier instead of a reducer.
+Suggested next step: Verify the pricing logic in discounted_total and ensure it correctly applies a discount by subtracting the discount from the subtotal, not adding it.
+Evidence: [reported:tests/test_invoice.py:6:1]
+Local model: qwen3:4b-instruct-2507-q4_K_M (0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0) at 1790919080
+Rating: unrated
 
-  Recorded command failed (exit 1). `explain` can help inspect [run:1].
+The explanation appeared automatically after project opt-in, with chat closed.
+The observation is recorded evidence; the cause is a tentative model hypothesis.
+No automatic patch preparation, application or execution took place.
 
-  * Pixel
-The failure is **observed** in the current code: `test_add` fails because `add(2, 3)` returns `-1`, not `5`. This is directly stated in the test output: `AssertionError: -1 != 5`.
-
-This is **not a hypothesis** — it is the actual reported failure from the test execution on the current code.
-
-The test expects `add(2, 3)` to return `5`, but the function `add` in `calc.py` currently returns `-1` for this input.
-
-No prior successful test run is currently verified. The last check (`run:1`) failed, and `current_verified_check=false`.
-
-**Next step**:
-Review the `calc.py` file to identify and correct the implementation of the `add` function.
-
-→ Please provide the content of `calc.py` so I can suggest a fix.
-  local / 4.4s / first text 0.7s / 182 tokens
-
-
+$ dot incident fix 1 --foreground
 $ dot task review 1
-Task [1] · review
-Goal: Prepare the smallest correction for incident #1, preserving tests. [long evidence payload omitted]
-
-The test fails because `add(2, 3)` returns -1 instead of 5. The current implementation in `calc.py` subtracts `b` from `a` (`return a - b`), which causes the failure. The smallest patch is to change the operation from subtraction to addition (`a + b`) to correctly return 5 when `add(2, 3)` is called. The test remains unchanged and is preserved as required.
-
-diff --git a/calc.py b/calc.py
---- a/calc.py
-+++ b/calc.py
-@@ -1,2 +1,2 @@
--def add(a, b):
--    return a - b
-+def add(a, b):
-+    return a + b
+diff --git a/billing/pricing.py b/billing/pricing.py
+--- a/billing/pricing.py
++++ b/billing/pricing.py
+@@ -3,4 +3,4 @@
+ def discounted_total(subtotal, discount_rate):
+     if not 0 <= discount_rate <= 1:
+         raise ValueError("discount_rate must be between zero and one")
+-    return cents(subtotal * (1 + discount_rate))
++    return cents(subtotal * (1 - discount_rate))
 
 Proposed code has not been tested. Approve with `task apply 1` (in chat: /apply 1); reject with `task reject 1`.
 
-The proposed correction was held for review. The original file remained
-unchanged until explicit application.
+The maker inspected this diff before explicit application. Only pricing.py
+changed; every test and other protected file retained its original SHA-256.
 
 $ dot task apply 1
 Applied task [1]. Run the relevant checks before relying on the change.
 
-$ dot task verify 1 tests
-Task [1] verified; [run:2] tests exit 0.
-test_add (test_calc.AdditionTest.test_add) ... ok
-Ran 1 test in 0.000s
+$ dot task verify 1 invoice-tests
+Task [1] verified; [run:2] invoice-tests exit 0.
+test_discount_reduces_total (test_invoice.InvoiceTests.test_discount_reduces_total) ... ok
+test_empty_basket (test_invoice.InvoiceTests.test_empty_basket) ... ok
+test_full_discount (test_invoice.InvoiceTests.test_full_discount) ... ok
+test_no_discount (test_invoice.InvoiceTests.test_no_discount) ... ok
+test_catalogue_quantity (test_pricing.PricingTests.test_catalogue_quantity) ... ok
+test_discount_rounds_to_cents (test_pricing.PricingTests.test_discount_rounds_to_cents) ... ok
+test_excess_discount_rejected (test_pricing.PricingTests.test_excess_discount_rejected) ... ok
+test_negative_discount_rejected (test_pricing.PricingTests.test_negative_discount_rejected) ... ok
+test_unknown_product_rejected (test_pricing.PricingTests.test_unknown_product_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
 OK
 
-$ dot incident list --all --json
-Incident #1: check-passed
+Saved statuses (summarized): task verified, verification_current=true, incident
+check-passed. Source changes made the earlier insight stale.
 
-$ dot task show 1
-status: verified
-verification_current: true
+REMAINING ERRORS — ALSO RECORDED
 
-A later generated-audio question was transcribed by local Whisper. The local
-model recapped the original assertion and identified passing run #2; Piper
-wrote the spoken answer. An initial answer speculated that tests might have
-changed; inspection confirmed they had not. The final installed-binary turn
-correctly recapped the original failure and current passing run without that
-speculation. Transcription converted the question into a statement, illustrating
-why voice text remains visible. Physical microphone and speaker
-comfort are not established by this file-audio test.
+The returning billing chat correctly named run #2 and nine passing tests, but
+invented a basket example not in the code. That text is not accepted evidence.
+The recorded check independently establishes the pass.
 
-Other exercised flows: bounded Bash PTY capture (including Ctrl-C), consented
-VS Code diagnostics ingestion and clear status, durable reminders/snooze, quiet
-periods, and a real desktop reminder delivery with the chat closed. A cleared
-editor message is distinct from passing check evidence.
+A separate official Flask 3.1.2 checkout (commit
+2c1b30d0503cfb064f1cb252e6614a06915a362a, 234 tracked files) passed all 35
+helper tests before an injected boolean-condition fault. Four tests then failed.
+Context followed Python imports through its src/ layout. Model attempts proposed
+wrong or incomplete patches. The maker rejected one that accepted only 'true'.
+A narrowed request produced a patch missing empty strings; the unchanged suite
+caught it (one failed, 34 passed). Revision attempts failed exact-text validation
+and changed no files. A citation pointed at a real but unrelated source label.
+Citation existence does not prove a diagnosis is supported.
+
+This larger trial exposed a file-priority bug and a revision prompt size bug;
+both were corrected with regression tests. The model reliability failures
+remain. Do not treat this preview as a reliable unattended coding agent.
+
+Version 0.5 has 95 passing Rust tests. Coverage includes multiple error formats,
+related source, quiet/cooldown/cancellation, stale evidence, setup, updating and
+private trial reports. Generated English voice passed in v0.4; voice code did
+not change for v0.5. A real microphone and speaker still need hands-on testing.

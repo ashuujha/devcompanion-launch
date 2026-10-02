@@ -37,3 +37,29 @@ body:
       description: Include one concrete useful or confusing moment.
     validations:
       required: true
+
+  - type: dropdown
+    id: alert-quality
+    attributes:
+      label: How did the alerts behave?
+      options:
+        - A useful failure was noticed
+        - An explanation was incorrect
+        - Repeated or unnecessary interruptions
+        - A problem was missed
+        - I only tried reminders or setup
+  - type: dropdown
+    id: return-intent
+    attributes:
+      label: Would you use it for another work session?
+      options:
+        - Yes, I already returned
+        - Yes, I plan to try again
+        - Unsure
+        - No
+  - type: textarea
+    id: counts
+    attributes:
+      label: Optional aggregate trial report
+      description: Paste dot trial report --json if you chose to record a session. This excludes code, paths and private notes. Review before sharing; do not paste a database export.
+      render: json
