@@ -15,6 +15,7 @@ is currently private.
 - [Download, checksums and release notes](https://github.com/ashuujha/devcompanion-launch/releases/tag/v0.5.0)
 - [Setup, update and privacy guide](https://ashuujha.github.io/devcompanion-launch/guide.html)
 - [Recorded v0.5 local-model workflow](https://ashuujha.github.io/devcompanion-launch/demo.txt)
+- [Join the first developer trials](https://github.com/ashuujha/devcompanion-launch/issues/1)
 - [First-session feedback](https://github.com/ashuujha/devcompanion-launch/issues/new/choose)
 
 ## Start with a real project
